@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_top_adder_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_top_adder" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="8720000001fs"></ZoomEndTime>
+      <Cursor1Time time="273000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="208"></NameColumnWidth>
+      <ValueColumnWidth column_width="80"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="6" />
+   <wvobject fp_name="group10" type="group">
+      <obj_property name="label">Input</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_top_adder/a" type="array">
+         <obj_property name="ElementShortName">a[7:0]</obj_property>
+         <obj_property name="ObjectShortName">a[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/b" type="array">
+         <obj_property name="ElementShortName">b[7:0]</obj_property>
+         <obj_property name="ObjectShortName">b[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/reset" type="logic">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group63" type="group">
+      <obj_property name="label">Digit_splitter</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_DIGIT_SPL/in_data" type="array">
+         <obj_property name="ElementShortName">in_data[8:0]</obj_property>
+         <obj_property name="ObjectShortName">in_data[8:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_DIGIT_SPL/digit_1" type="array">
+         <obj_property name="ElementShortName">digit_1[3:0]</obj_property>
+         <obj_property name="ObjectShortName">digit_1[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_DIGIT_SPL/digit_10" type="array">
+         <obj_property name="ElementShortName">digit_10[3:0]</obj_property>
+         <obj_property name="ObjectShortName">digit_10[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_DIGIT_SPL/digit_100" type="array">
+         <obj_property name="ElementShortName">digit_100[3:0]</obj_property>
+         <obj_property name="ObjectShortName">digit_100[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_DIGIT_SPL/digit_1000" type="array">
+         <obj_property name="ElementShortName">digit_1000[3:0]</obj_property>
+         <obj_property name="ObjectShortName">digit_1000[3:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group64" type="group">
+      <obj_property name="label">Counter_4</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_COUNTER_4/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_COUNTER_4/reset" type="logic">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_COUNTER_4/digit_sel" type="array">
+         <obj_property name="ElementShortName">digit_sel[1:0]</obj_property>
+         <obj_property name="ObjectShortName">digit_sel[1:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_COUNTER_4/counter_r" type="array">
+         <obj_property name="ElementShortName">counter_r[1:0]</obj_property>
+         <obj_property name="ObjectShortName">counter_r[1:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group65" type="group">
+      <obj_property name="label">Clk_div</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_CLK_DIV/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_CLK_DIV/reset" type="logic">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_CLK_DIV/o_1khz" type="logic">
+         <obj_property name="ElementShortName">o_1khz</obj_property>
+         <obj_property name="ObjectShortName">o_1khz</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_CLK_DIV/counter_r" type="array">
+         <obj_property name="ElementShortName">counter_r[17:0]</obj_property>
+         <obj_property name="ObjectShortName">counter_r[17:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group68" type="group">
+      <obj_property name="label">Bcd</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_BCD/bcd" type="array">
+         <obj_property name="ElementShortName">bcd[3:0]</obj_property>
+         <obj_property name="ObjectShortName">bcd[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_BCD/fnd_data" type="array">
+         <obj_property name="ElementShortName">fnd_data[7:0]</obj_property>
+         <obj_property name="ObjectShortName">fnd_data[7:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group39" type="group">
+      <obj_property name="label">Decoder</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_DECODER_2X4/digit_sel" type="array">
+         <obj_property name="ElementShortName">digit_sel[1:0]</obj_property>
+         <obj_property name="ObjectShortName">digit_sel[1:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_top_adder/dut/U_FND_CNTL/U_DECODER_2X4/fnd_digit" type="array">
+         <obj_property name="ElementShortName">fnd_digit[3:0]</obj_property>
+         <obj_property name="ObjectShortName">fnd_digit[3:0]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>
