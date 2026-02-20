@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_dht11_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_dht11" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="19208025000fs"></ZoomStartTime>
+      <ZoomEndTime time="23218025001fs"></ZoomEndTime>
+      <Cursor1Time time="20268025000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="201"></NameColumnWidth>
+      <ValueColumnWidth column_width="84"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="20" />
+   <wvobject fp_name="/tb_dht11/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dht11_sensor_io" type="logic">
+      <obj_property name="ElementShortName">dht11_sensor_io</obj_property>
+      <obj_property name="ObjectShortName">dht11_sensor_io</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/sensor_io_sel" type="logic">
+      <obj_property name="ElementShortName">sensor_io_sel</obj_property>
+      <obj_property name="ObjectShortName">sensor_io_sel</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dht11_sensor_data" type="array">
+      <obj_property name="ElementShortName">dht11_sensor_data[39:0]</obj_property>
+      <obj_property name="ObjectShortName">dht11_sensor_data[39:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dut/U_DHT11/tick_1us" type="logic">
+      <obj_property name="ElementShortName">tick_1us</obj_property>
+      <obj_property name="ObjectShortName">tick_1us</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dhtio" type="logic">
+      <obj_property name="ElementShortName">dhtio</obj_property>
+      <obj_property name="ObjectShortName">dhtio</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dut/U_DHT11/delay" type="logic">
+      <obj_property name="ElementShortName">delay</obj_property>
+      <obj_property name="ObjectShortName">delay</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/i" type="array">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dut/U_DHT11/c_state" type="array">
+      <obj_property name="ElementShortName">c_state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c_state[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dut/U_DHT11/shift_reg" type="array">
+      <obj_property name="ElementShortName">shift_reg[39:0]</obj_property>
+      <obj_property name="ObjectShortName">shift_reg[39:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dut/U_DHT11/humidity" type="array">
+      <obj_property name="ElementShortName">humidity[15:0]</obj_property>
+      <obj_property name="ObjectShortName">humidity[15:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dut/U_DHT11/temperature" type="array">
+      <obj_property name="ElementShortName">temperature[15:0]</obj_property>
+      <obj_property name="ObjectShortName">temperature[15:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dut/U_FND/fnd_data" type="array">
+      <obj_property name="ElementShortName">fnd_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">fnd_data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dut/U_FND/fnd_digit" type="array">
+      <obj_property name="ElementShortName">fnd_digit[3:0]</obj_property>
+      <obj_property name="ObjectShortName">fnd_digit[3:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dut/U_FND/fnd_in_data" type="array">
+      <obj_property name="ElementShortName">fnd_in_data[27:0]</obj_property>
+      <obj_property name="ObjectShortName">fnd_in_data[27:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="group31" type="group">
+      <obj_property name="label">FND</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/tb_dht11/dut/w_data_hum" type="array">
+         <obj_property name="ElementShortName">w_data_hum[15:0]</obj_property>
+         <obj_property name="ObjectShortName">w_data_hum[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/w_data_tem" type="array">
+         <obj_property name="ElementShortName">w_data_tem[15:0]</obj_property>
+         <obj_property name="ObjectShortName">w_data_tem[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/w_data" type="array">
+         <obj_property name="ElementShortName">w_data[27:0]</obj_property>
+         <obj_property name="ObjectShortName">w_data[27:0]</obj_property>
+         <obj_property name="Radix">BINARYRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_FND/w_mux_2x1_out" type="array">
+         <obj_property name="ElementShortName">w_mux_2x1_out[3:0]</obj_property>
+         <obj_property name="ObjectShortName">w_mux_2x1_out[3:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_FND/w_mux_hour_min_out" type="array">
+         <obj_property name="ElementShortName">w_mux_hour_min_out[3:0]</obj_property>
+         <obj_property name="ObjectShortName">w_mux_hour_min_out[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_FND/w_mux_sec_msec_out" type="array">
+         <obj_property name="ElementShortName">w_mux_sec_msec_out[3:0]</obj_property>
+         <obj_property name="ObjectShortName">w_mux_sec_msec_out[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_FND/w_digit_msec_1" type="array">
+         <obj_property name="ElementShortName">w_digit_msec_1[3:0]</obj_property>
+         <obj_property name="ObjectShortName">w_digit_msec_1[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_FND/w_digit_msec_10" type="array">
+         <obj_property name="ElementShortName">w_digit_msec_10[3:0]</obj_property>
+         <obj_property name="ObjectShortName">w_digit_msec_10[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_FND/w_digit_sec_1" type="array">
+         <obj_property name="ElementShortName">w_digit_sec_1[3:0]</obj_property>
+         <obj_property name="ObjectShortName">w_digit_sec_1[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_FND/w_digit_sec_10" type="array">
+         <obj_property name="ElementShortName">w_digit_sec_10[3:0]</obj_property>
+         <obj_property name="ObjectShortName">w_digit_sec_10[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_FND/w_digit_min_1" type="array">
+         <obj_property name="ElementShortName">w_digit_min_1[3:0]</obj_property>
+         <obj_property name="ObjectShortName">w_digit_min_1[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_FND/w_digit_min_10" type="array">
+         <obj_property name="ElementShortName">w_digit_min_10[3:0]</obj_property>
+         <obj_property name="ObjectShortName">w_digit_min_10[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_FND/w_digit_hour_1" type="array">
+         <obj_property name="ElementShortName">w_digit_hour_1[3:0]</obj_property>
+         <obj_property name="ObjectShortName">w_digit_hour_1[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_FND/w_digit_hour_10" type="array">
+         <obj_property name="ElementShortName">w_digit_hour_10[3:0]</obj_property>
+         <obj_property name="ObjectShortName">w_digit_hour_10[3:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/tb_dht11/dut/U_DHT11/tick_cnt_reg" type="array">
+      <obj_property name="ElementShortName">tick_cnt_reg[14:0]</obj_property>
+      <obj_property name="ObjectShortName">tick_cnt_reg[14:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="group32" type="group">
+      <obj_property name="label">Sync</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_dht11/dut/U_DHT11/dht_sync1" type="logic">
+         <obj_property name="ElementShortName">dht_sync1</obj_property>
+         <obj_property name="ObjectShortName">dht_sync1</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_DHT11/dht_sync2" type="logic">
+         <obj_property name="ElementShortName">dht_sync2</obj_property>
+         <obj_property name="ObjectShortName">dht_sync2</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_DHT11/dht_prev" type="logic">
+         <obj_property name="ElementShortName">dht_prev</obj_property>
+         <obj_property name="ObjectShortName">dht_prev</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_DHT11/dht_rising" type="logic">
+         <obj_property name="ElementShortName">dht_rising</obj_property>
+         <obj_property name="ObjectShortName">dht_rising</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_dht11/dut/U_DHT11/dht_falling" type="logic">
+         <obj_property name="ElementShortName">dht_falling</obj_property>
+         <obj_property name="ObjectShortName">dht_falling</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>
