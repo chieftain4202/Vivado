@@ -1,23 +1,23 @@
 `timescale 1ns / 1ps
 
-module tb_dht11();
+module tb_dht11 ();
 
     reg clk, rst, start;
     reg dht11_sensor_io, sensor_io_sel;
+    reg [39:0] dht11_sensor_data;
     wire dhtio;
+    integer i;
 
-    assign dhtio = (sensor_io_sel) ?1'bz : dht11_sensor_io;
+    assign dhtio = (sensor_io_sel) ? 1'bz : dht11_sensor_io;
 
-dht11_controller dut(
+    TOP_dht11 dut(
     .clk(clk),
     .rst(rst),
-    .start(start),
-    .humidity(),
-    .temperature(),
-    .dht11_done(),
-    .dht11_valid(),
-    .debug(),
-    .dhtio(dhtio)         //always wire
+    .btn_r(start),
+    .sw(),
+    .fnd_digit(),
+    .fnd_data(),
+    .dhtio(dhtio)
 
 );
 
@@ -30,6 +30,10 @@ dht11_controller dut(
         start = 0;
         dht11_sensor_io = 1'b0;
         sensor_io_sel = 1'b1;
+        i = 0;
+
+        //huminity, integral, decimal, temperature interal, deciaml, checksum
+        dht11_sensor_data = {8'h32, 8'h00, 8'h19, 8'h00, 8'h4b};
 
         //reset 
         #20;
@@ -40,12 +44,43 @@ dht11_controller dut(
         start = 0;
 
         //19msec + 30usec
-        #(1900*10*1000+ 30_000);
-        sensor_io_sel = 0;
+        #(1900 * 10 * 1000 + 30_000);
+
+        //to output, sensor to FPGA
+        sensor_io_sel   = 0;
+        //sync_L, sync_H
+        dht11_sensor_io = 0;
+        #(80_000);
+        dht11_sensor_io = 1'b1;
+        #(80_000);
+
+        // 40 bit data pattern
+
+        for (i = 39; i >= 0; i = i - 1) begin
+            // data_sync_1
+            dht11_sensor_io = 1'b0;
+            #(50_000);
+            //data_value_h
+            if (dht11_sensor_data[i] == 0) begin
+                dht11_sensor_io = 1'b1;
+                #(28_000);
+            end else begin
+                dht11_sensor_io = 1'b1;
+                #(70_000);
+            end
+        end
+        dht11_sensor_io = 0;
+        #(50_000);
+        //to output, FPGA to sensor
+        sensor_io_sel = 1;
+
+        #100_000;
+
+
 
         #1000;
         $stop;
-   
+
     end
 
 

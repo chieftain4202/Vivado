@@ -4,10 +4,10 @@ module dht11_controller (
     input         clk,
     input         rst,
     input         start,
-    output [15:0] humidity,
-    output [15:0] temperature,
-    output        dht11_done,
-    output        dht11_valid,
+    output reg [15:0] humidity,
+    output reg [15:0] temperature,
+    output reg      dht11_done,
+    output reg      dht11_valid,
     output [ 3:0] debug,
     inout         dhtio         //always wire
 
@@ -23,41 +23,61 @@ module dht11_controller (
 
     parameter IDLE = 0, START = 1, WAIT = 2, SYNC_L = 3, SYNC_H = 4, DATA_SYNC = 5, DATA_C = 6, STOP = 7;
 
-    reg [3:0] c_state, n_state;
+
+    reg [2:0] c_state, n_state;
     reg dhtio_r, dhtio_n;
     reg io_sel_reg, io_sel_next;
     //for 19sec count by 10usec tick
     reg [$clog2(19000)-1:0] tick_cnt_reg, tick_cnt_next;
-    assign dhtio = (io_sel_reg) ? dhtio_r: 1'bz;
+    reg [5:0] bit_cnt, bit_next;
+    reg [39:0] shift_reg, shift_next;
+    reg delay;
+
+    assign dhtio = (io_sel_reg) ? dhtio_r : 1'bz;
+    assign debug = c_state;
+
+    always @(posedge clk) begin
+        delay = dhtio;
+    end
 
     always @(posedge clk, posedge rst) begin
         if (rst) begin
-            c_state <= 3'b000;
-            dhtio_r <= 1'b1;
+            c_state      <= 3'b000;
+            dhtio_r      <= 1'b1;
             tick_cnt_reg <= 0;
-            io_sel_reg <= 1'b1;
+            io_sel_reg   <= 1'b1;
+            shift_reg    <= 0;
+            bit_cnt      <= 0;
+            delay        <= 0;
         end else begin
-            c_state <= n_state;
-            dhtio_r <= dhtio_n;
+            c_state      <= n_state;
+            dhtio_r      <= dhtio_n;
             tick_cnt_reg <= tick_cnt_next;
-            io_sel_reg <= io_sel_next;
+            io_sel_reg   <= io_sel_next;
+            shift_reg    <= shift_next;
+            bit_cnt      <= bit_next;
         end
     end
-//tick_10u -> tick_1u
+
+    //tick_10u -> tick_1u
     //next, output
     always @(*) begin
-        n_state = c_state;
-        dhtio_n = dhtio_r;
-        io_sel_next = io_sel_reg;
+        n_state       = c_state;
+        dhtio_n       = dhtio_r;
+        io_sel_next   = io_sel_reg;
         tick_cnt_next = tick_cnt_reg;
+        shift_next    = shift_reg;
+        bit_next      = bit_cnt;
         case (c_state)
             IDLE: begin
+                dht11_done = 0;
                 if (start) begin
                     n_state = START;
                 end
-            end 
+            end
             START: begin
                 dhtio_n = 1'b0;
+                dht11_valid = 1;
                 if (tick_1us) begin
                     tick_cnt_next = tick_cnt_reg + 1;
                     if (tick_cnt_reg == 19000) begin
@@ -66,14 +86,15 @@ module dht11_controller (
                     end
                 end
             end
-            WAIT: begin             
-                dhtio_n = 1'b1; //1
+            WAIT: begin
+                dhtio_n = 1'b1;  //1
                 if (tick_1us) begin
                     tick_cnt_next = tick_cnt_reg + 1;
                     if (tick_cnt_reg == 30) begin
                         //for output to high-z
                         n_state = SYNC_L;
                         io_sel_next = 1'b0;
+                        tick_cnt_next = 0;
                     end
                 end
             end
@@ -87,28 +108,53 @@ module dht11_controller (
             SYNC_H: begin
                 if (tick_1us) begin
                     if (dhtio == 0) begin
-                        n_state = DATA_SYNC;
-                    end
-                end
-            end
-            DATA_SYNC: begin
-                if (tick_1us) begin
-                    if (dhtio == 1) begin
                         n_state = DATA_C;
                     end
                 end
             end
+            // DATA_SYNC: begin
+            //     if (tick_1us) begin
+            //         if (dhtio == 1) begin
+            //             n_state = DATA_C;
+            //         end
+            //     end
+            // end
             DATA_C: begin
+
                 if (tick_1us) begin
                     if (dhtio == 1) begin
                         //tick_count
                         tick_cnt_next = tick_cnt_reg + 1;
+                    end else begin
+                        tick_cnt_next = 0;
                     end
-                    else begin
-                        n_state = STOP;
+                end
+
+
+                if (dhtio) begin
+                    if (delay == 0) begin
+                        bit_next = bit_cnt + 1;
+                    end
+                end else begin
+                    if (delay == 1) begin
+                        if (tick_cnt_reg < 45) begin
+                            shift_next = {shift_reg[38:0], 1'b0};
+                        end else begin
+                            shift_next = {shift_reg[38:0], 1'b1};
+                        end
+                    end
+                end
+                if (bit_cnt == 40) begin
+                    if (delay == 0) begin
+                        
+                    bit_next = 0;
+                    tick_cnt_next = 0;
+                    n_state  = STOP;
                     end
                 end
             end
+
+
             STOP: begin
                 if (tick_1us) begin
                     tick_cnt_next = tick_cnt_reg + 1;
@@ -117,10 +163,20 @@ module dht11_controller (
                         dhtio_n = 1'b1;
                         io_sel_next = 1'b1;
                         n_state = IDLE;
+                        humidity[15:8] = shift_reg[39:32];
+                        humidity[7:0] = shift_reg[31:24];
+                        temperature[15:8] = shift_reg[23:16];
+                        temperature[7:0] = shift_reg[15:8];
+                        dht11_done = 1;
+                        if (shift_reg[39:32]+shift_reg[31:24]+shift_reg[23:16]+shift_reg[15:8] == shift_reg [7:0]) begin
+                            dht11_valid = 1;
+                        end else begin
+                            dht11_valid = 0;
+                        end
                     end
                 end
             end
-        endcase    
+        endcase
     end
 
 
