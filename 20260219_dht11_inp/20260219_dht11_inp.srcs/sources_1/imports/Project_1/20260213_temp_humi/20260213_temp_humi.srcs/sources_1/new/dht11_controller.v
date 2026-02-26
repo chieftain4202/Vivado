@@ -1,16 +1,16 @@
 `timescale 1ns / 1ps
 
 module dht11_controller (
-    input             clk,
-    input             rst,
-    input             start,
-    output reg [15:0] humidity,
-    output reg [15:0] temperature,
-    output reg        dht11_done,
-    output reg        dht11_valid,
-    output reg [ 7:0] LED,
-    output     [ 3:0] debug,
-    inout             dhtio         //always wire
+    input              clk,
+    input              rst,
+    input              start,
+    output wire [15:0] humidity,
+    output wire [15:0] temperature,
+    output wire        dht11_done,
+    output wire        dht11_valid,
+    output reg  [ 7:0] LED,
+    output      [ 3:0] debug,
+    inout              dhtio         //always wire
 
 );
 
@@ -33,21 +33,28 @@ module dht11_controller (
     reg [5:0] bit_cnt, bit_next;
     reg [39:0] shift_reg, shift_next;
     reg delay;
+    reg [15:0] hum_next, hum_reg;
+    reg [15:0] tmp_next, tmp_reg;
+    reg done_reg, done_next, valid_reg, valid_next;
 
 
     reg dht_sync1, dht_sync2;
     reg dht_prev;
 
     always @(posedge clk) begin
-        dht_sync1 <= dhtio;      
-        dht_sync2 <= dht_sync1;  
-        dht_prev  <= dht_sync2;  
+        dht_sync1 <= dhtio;
+        dht_sync2 <= dht_sync1;
+        dht_prev  <= dht_sync2;
     end
 
     wire dht_rising = (dht_sync2 & ~dht_prev);
     wire dht_falling = (~dht_sync2 & dht_prev);
 
 
+    assign humidity = hum_reg;
+    assign temperature = tmp_reg;
+    assign dht11_valid = valid_reg;
+    assign dht11_done = done_reg;
 
     assign dhtio = (io_sel_reg) ? dhtio_r : 1'bz;
     assign debug = c_state;
@@ -64,7 +71,10 @@ module dht11_controller (
             io_sel_reg   <= 1'b1;
             shift_reg    <= 0;
             bit_cnt      <= 0;
-            LED          <= 8'b0000_0001;
+            hum_reg      <= 0;
+            tmp_reg      <= 0;
+            valid_reg    <= 0;
+            done_reg     <= 0;
 
         end else begin
             c_state      <= n_state;
@@ -73,6 +83,11 @@ module dht11_controller (
             io_sel_reg   <= io_sel_next;
             shift_reg    <= shift_next;
             bit_cnt      <= bit_next;
+            tmp_reg      <= tmp_next;
+            hum_reg      <= hum_next;
+            done_reg     <= done_next;
+            valid_reg    <= valid_next;
+
         end
     end
 
@@ -85,19 +100,25 @@ module dht11_controller (
         tick_cnt_next = tick_cnt_reg;
         shift_next    = shift_reg;
         bit_next      = bit_cnt;
+        tmp_next      = tmp_reg;
+        hum_next      = hum_reg;
+        done_next     = done_reg;
+        valid_next    = valid_reg;
+
         case (c_state)
             IDLE: begin
-                dht11_done = 0;
+                done_next = 0;
+                valid_next = 0;
                 LED[1] = 1;
                 if (start) begin
                     n_state = START;
-                    LED[1]  = 0;
+                    LED[1] = 0;
                     shift_next = 0;
                 end
             end
             START: begin
                 dhtio_n = 1'b0;
-                dht11_valid = 1;
+                valid_next = 1;
                 LED[2] = 1;
                 if (tick_1us) begin
                     tick_cnt_next = tick_cnt_reg + 1;
@@ -158,9 +179,9 @@ module dht11_controller (
                 if (dht_falling) begin
                     if (tick_cnt_reg < 45) shift_next = {shift_reg[38:0], 1'b0};
                     else shift_next = {shift_reg[38:0], 1'b1};
+                    if (bit_cnt == 40) n_state = STOP;
+                    tick_cnt_next = 0;
                 end
-
-                if (bit_cnt == 40) n_state = STOP;
             end
 
 
@@ -174,16 +195,18 @@ module dht11_controller (
                         io_sel_next = 1'b1;
 
                         LED[7] = 0;
-                        humidity[15:8] = shift_reg[39:32];
-                        humidity[7:0] = shift_reg[31:24];
-                        temperature[15:8] = shift_reg[23:16];
-                        temperature[7:0] = shift_reg[15:8];
-                        dht11_done = 1;
+                        hum_next[15:8] = shift_reg[39:32];
+                        hum_next[7:0] = shift_reg[31:24];
+                        tmp_next[15:8] = shift_reg[23:16];
+                        tmp_next[7:0] = shift_reg[15:8];
+                        done_next = 1;
+                        n_state = IDLE;
+                        tick_cnt_next = 0;
+                        bit_next = 0;
                         if (shift_reg[39:32]+shift_reg[31:24]+shift_reg[23:16]+shift_reg[15:8] == shift_reg [7:0]) begin
-                            dht11_valid = 1;
-                            n_state = IDLE;
+                            valid_next = 1;
                         end else begin
-                            dht11_valid = 0;
+                            valid_next = 0;
                         end
                     end
                 end

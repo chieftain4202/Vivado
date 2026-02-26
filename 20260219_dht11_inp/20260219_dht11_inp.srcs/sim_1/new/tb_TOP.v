@@ -21,27 +21,9 @@ module tb_dht11 ();
     .dhtio(dhtio)
 
 );
-
-    always #5 clk = ~clk;
-
-    initial begin
-        #0;
-        rst = 1;
-        clk = 0;
-        start = 0;
-        dht11_sensor_io = 1'b0;
-        sensor_io_sel = 1'b1;
-        i = 0;
-        sw[0] = 0;
-
-        //huminity, integral, decimal, temperature interal, deciaml, checksum
-        dht11_sensor_data = {8'h32, 8'h2B, 8'h19, 8'h00, 8'h4b};
-
-        //reset 
-        #20;
-        rst = 0;
-        #20;
-        start = 1;
+task dht11();
+begin
+    start = 1;
         #1000000;
         start = 0;
 
@@ -75,8 +57,36 @@ module tb_dht11 ();
         #(50_000);
         //to output, FPGA to sensor
         sensor_io_sel = 1;
+end
+endtask
+
+    always #5 clk = ~clk;
+
+    initial begin
+        #0;
+        rst = 1;
+        clk = 0;
+        start = 0;
+        dht11_sensor_io = 1'b0;
+        sensor_io_sel = 1'b1;
+        i = 0;
+        sw[0] = 0;
+
+        //huminity, integral, decimal, temperature interal, deciaml, checksum
+        dht11_sensor_data = {8'h32, 8'h2B, 8'h19, 8'h00, 8'h4b};
+
+        //reset 
+        #20;
+        rst = 0;
+        #20;
+        dht11();
+
+
+        
 
         #100_000;
+        dht11_sensor_data = {8'h11, 8'h22, 8'h33, 8'h44, 8'h00};
+        dht11();
 
 
 
