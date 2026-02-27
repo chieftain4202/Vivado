@@ -1,0 +1,61 @@
+`timescale 1ns / 1ps
+
+interface adder_interface;
+    logic [31:0] a;
+    logic [31:0] b;
+    logic [31:0] s;
+    logic        c;
+    logic        mode;
+endinterface  // adder_interface
+
+
+class transasction;
+    rand bit [31:0] a;
+    rand bit [31:0] b;
+    bit             mode;
+endclass
+
+
+class generator;
+    transasction tr;        //variable declaration : data type transction
+    virtual adder_interface adder_interf_gen;
+    function new(virtual adder_interface adder_interf_ext);
+        this.adder_interf_gen = adder_interf_ext;
+        tr               = new();
+    endfunction
+    task run();
+        tr.randomize();
+        tr.mode = 0;
+        adder_interf_gen.a = tr.a;
+        adder_interf_gen.b = tr.b;
+        adder_interf_gen.mode = tr.mode;
+
+        //drive
+        #10;
+    endtask //
+endclass    //generator
+
+
+module tb_adder_sv ();
+    adder_interface adder_interf();
+    // declaration class generator
+    // gen:generator 객체를 관리하기 위한 handler
+    generator       gen;
+    adder dut (
+        .a   (adder_interf.a),
+        .b   (adder_interf.b),
+        .mode(adder_interf.mode),
+        .s   (adder_interf.s),
+        .c   (adder_interf.c)
+    );
+
+    initial begin
+        // generation class generator;
+        // execution function new in generator class
+        // constructor new
+        gen = new(adder_interf);
+        // execution task run after construction new
+        gen.run();
+        $stop;
+    end
+endmodule
