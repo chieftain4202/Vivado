@@ -17,6 +17,7 @@ endinterface  //watch_if watch_if
 
 
 class transaction;
+    rand bit    rst;
     rand bit    sw;
     rand bit    btn_l;
     rand bit    btn_r;
@@ -51,7 +52,13 @@ class generator;
     task run(int run_count);
         repeat (run_count) begin
             tr = new();
-            tr.randomize();
+            tr.btn_l = 0;
+            tr.rst = 0;
+            tr.btn_u = 1;
+            
+        //    assert (std::randomize(tr.btn_u));
+            tr.sw = 0;
+
             gen2drv_mbox.put(tr);
             tr.display("gen");
             @(scb2gen_ev);
@@ -81,6 +88,7 @@ class driver;
             watch_if.btn_r = tr.btn_r;
             watch_if.btn_u = tr.btn_u;
             watch_if.btn_d = tr.btn_d;
+            watch_if.rst   = tr.rst;
             tr.display("drv");
         end
 
@@ -203,8 +211,8 @@ class scoreboard;
                         $realtime, tick_hour, tick_min, tick_sec, tick_msec,
                         tr.hour, tr.min, tr.sec, tr.msec);
                 end
+                ->scb2gen_ev;
             end
-            ->scb2gen_ev;
         join_none
 
     endtask  //run
@@ -236,12 +244,12 @@ class environment;
 
     task run();
         fork
-            gen.run(10);
+            gen.run(20);
             drv.run();
             mon.run();
             scb.run();
         join_any
-        #20;
+        #200;
         $display("___________________________");
         $display("** 8bit register verifi  **");
         $display("***************************");

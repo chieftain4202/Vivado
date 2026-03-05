@@ -8,6 +8,8 @@ module control_unit (
     input sw_2,
     input [2:0] i_rx_data,
     input [2:0] i_btn_dcd,
+//
+
     output reg o_run_stop,
     output o_mode,
     output reg o_clear,

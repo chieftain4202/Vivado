@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_tx_fifo_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="\$unit_fifo_sv " />
+            <top_module name="glbl" />
+            <top_module name="std" />
+            <top_module name="tb_tx_fifo" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="3992804166fs"></ZoomStartTime>
+      <ZoomEndTime time="21700029167fs"></ZoomEndTime>
+      <Cursor1Time time="18748825000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="242"></NameColumnWidth>
+      <ValueColumnWidth column_width="106"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="8" />
+   <wvobject fp_name="/tb_tx_fifo/U_UART_TX/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tx_fifo/U_UART_TX/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tx_fifo/U_UART_TX/tx_start" type="logic">
+      <obj_property name="ElementShortName">tx_start</obj_property>
+      <obj_property name="ObjectShortName">tx_start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tx_fifo/U_UART_TX/b_tick" type="logic">
+      <obj_property name="ElementShortName">b_tick</obj_property>
+      <obj_property name="ObjectShortName">b_tick</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tx_fifo/U_UART_TX/tx_data" type="array">
+      <obj_property name="ElementShortName">tx_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">tx_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_tx_fifo/U_UART_TX/tx_busy" type="logic">
+      <obj_property name="ElementShortName">tx_busy</obj_property>
+      <obj_property name="ObjectShortName">tx_busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="group56" type="group">
+      <obj_property name="label">FIFO</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/w_clk" type="logic">
+         <obj_property name="ElementShortName">w_clk</obj_property>
+         <obj_property name="ObjectShortName">w_clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/r_clk" type="logic">
+         <obj_property name="ElementShortName">r_clk</obj_property>
+         <obj_property name="ObjectShortName">r_clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/rst" type="logic">
+         <obj_property name="ElementShortName">rst</obj_property>
+         <obj_property name="ObjectShortName">rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/we" type="logic">
+         <obj_property name="ElementShortName">we</obj_property>
+         <obj_property name="ObjectShortName">we</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/re" type="logic">
+         <obj_property name="ElementShortName">re</obj_property>
+         <obj_property name="ObjectShortName">re</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/wdata" type="array">
+         <obj_property name="ElementShortName">wdata[7:0]</obj_property>
+         <obj_property name="ObjectShortName">wdata[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/rdata" type="array">
+         <obj_property name="ElementShortName">rdata[7:0]</obj_property>
+         <obj_property name="ObjectShortName">rdata[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/full" type="logic">
+         <obj_property name="ElementShortName">full</obj_property>
+         <obj_property name="ObjectShortName">full</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/empty" type="logic">
+         <obj_property name="ElementShortName">empty</obj_property>
+         <obj_property name="ObjectShortName">empty</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/waddr" type="array">
+         <obj_property name="ElementShortName">waddr[3:0]</obj_property>
+         <obj_property name="ObjectShortName">waddr[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/raddr" type="array">
+         <obj_property name="ElementShortName">raddr[3:0]</obj_property>
+         <obj_property name="ObjectShortName">raddr[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_FIFO/U_SRAM/sram_reg" type="array">
+         <obj_property name="ElementShortName">sram_reg[0:15][7:0]</obj_property>
+         <obj_property name="ObjectShortName">sram_reg[0:15][7:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group33" type="group">
+      <obj_property name="label">TX</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_tx_fifo/tx_fifo_if/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/tx_fifo_if/rst" type="logic">
+         <obj_property name="ElementShortName">rst</obj_property>
+         <obj_property name="ObjectShortName">rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/tx_fifo_if/fifo_we" type="logic">
+         <obj_property name="ElementShortName">fifo_we</obj_property>
+         <obj_property name="ObjectShortName">fifo_we</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/tx_fifo_if/fifo_wdata" type="array">
+         <obj_property name="ElementShortName">fifo_wdata[7:0]</obj_property>
+         <obj_property name="ObjectShortName">fifo_wdata[7:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/tx_fifo_if/tx_busy" type="logic">
+         <obj_property name="ElementShortName">tx_busy</obj_property>
+         <obj_property name="ObjectShortName">tx_busy</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/tx_fifo_if/tx_done" type="logic">
+         <obj_property name="ElementShortName">tx_done</obj_property>
+         <obj_property name="ObjectShortName">tx_done</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/tx_fifo_if/uart_tx" type="logic">
+         <obj_property name="ElementShortName">uart_tx</obj_property>
+         <obj_property name="ObjectShortName">uart_tx</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_UART_TX/tx_reg" type="logic">
+         <obj_property name="ElementShortName">tx_reg</obj_property>
+         <obj_property name="ObjectShortName">tx_reg</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_UART_TX/c_state" type="array">
+         <obj_property name="ElementShortName">c_state[1:0]</obj_property>
+         <obj_property name="ObjectShortName">c_state[1:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_UART_TX/bit_cnt_reg" type="array">
+         <obj_property name="ElementShortName">bit_cnt_reg[3:0]</obj_property>
+         <obj_property name="ObjectShortName">bit_cnt_reg[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_UART_TX/tx_busy_reg" type="logic">
+         <obj_property name="ElementShortName">tx_busy_reg</obj_property>
+         <obj_property name="ObjectShortName">tx_busy_reg</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_UART_TX/tx_done_reg" type="logic">
+         <obj_property name="ElementShortName">tx_done_reg</obj_property>
+         <obj_property name="ObjectShortName">tx_done_reg</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_UART_TX/data_in_buf_reg" type="array">
+         <obj_property name="ElementShortName">data_in_buf_reg[7:0]</obj_property>
+         <obj_property name="ObjectShortName">data_in_buf_reg[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_tx_fifo/U_UART_TX/bt_cnt16_reg" type="array">
+         <obj_property name="ElementShortName">bt_cnt16_reg[3:0]</obj_property>
+         <obj_property name="ObjectShortName">bt_cnt16_reg[3:0]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

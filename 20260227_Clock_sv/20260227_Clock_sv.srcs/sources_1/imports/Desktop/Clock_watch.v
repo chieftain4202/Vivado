@@ -34,9 +34,9 @@ module Top_stopwatch (
     wire [2:0] w_asc_dcd;
     wire w_hour_up, w_hour_down, w_min_up, w_min_down, w_sec_up, w_sec_down;
     wire [3:0] w_sw;
-
+/*
    
-   /* btn_debounce U_BD_RIGHT (
+    btn_debounce U_BD_RIGHT (
         .clk  (clk),
         .reset(reset),
         .i_btn(btn_r),
@@ -119,7 +119,7 @@ module Top_stopwatch (
     stopwatch_datapath U_STOPWATCH_DATAPATH (
         .clk     (clk),
         .reset   (reset),
-        .mode    (w_mode),
+        .mode    (sw),
         .clear   (w_clear),
         .run_stop(w_run_stop),
         .msec    (w_stopwatch_time[6:0]),    //7bit
@@ -160,16 +160,16 @@ module Top_stopwatch (
         .uart_rx_done(w_rx_done),
         .o_asc_dcd(w_asc_dcd)
     );
-
+*/
     btn_decoder U_BTN_DCD (
-        .i_btn_l  (o_btn_left),
-        .i_btn_r  (o_btn_run_stop),
-        .i_btn_u  (o_btn_up),
-        .i_btn_d  (o_btn_down),
-        .i_btn_c  (o_btn_run_clear),
+        .i_btn_l  (btn_l),
+        .i_btn_r  (btn_r),
+        .i_btn_u  (btn_u),
+        .i_btn_d  (btn_d),
+        .i_btn_c  (reset),
         .o_btn_dcd(w_btn_con)
     );
-*/
+
 
 endmodule
 
