@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_cpu_reg_pr_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_cpu_reg_pr" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="355501fs"></ZoomEndTime>
+      <Cursor1Time time="156000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="138"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="20" />
+   <wvobject fp_name="/tb_cpu_reg_pr/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_control/c_state" type="array">
+      <obj_property name="ElementShortName">c_state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c_state[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/out" type="array">
+      <obj_property name="ElementShortName">out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">out[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/sumsrcsel" type="logic">
+      <obj_property name="ElementShortName">sumsrcsel</obj_property>
+      <obj_property name="ObjectShortName">sumsrcsel</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/isrcsel" type="logic">
+      <obj_property name="ElementShortName">isrcsel</obj_property>
+      <obj_property name="ObjectShortName">isrcsel</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/sumload" type="logic">
+      <obj_property name="ElementShortName">sumload</obj_property>
+      <obj_property name="ObjectShortName">sumload</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/iload" type="logic">
+      <obj_property name="ElementShortName">iload</obj_property>
+      <obj_property name="ObjectShortName">iload</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/alusrcsel" type="logic">
+      <obj_property name="ElementShortName">alusrcsel</obj_property>
+      <obj_property name="ObjectShortName">alusrcsel</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/outload" type="logic">
+      <obj_property name="ElementShortName">outload</obj_property>
+      <obj_property name="ObjectShortName">outload</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/ile10" type="logic">
+      <obj_property name="ElementShortName">ile10</obj_property>
+      <obj_property name="ObjectShortName">ile10</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/out" type="array">
+      <obj_property name="ElementShortName">out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/ireg_src_data" type="array">
+      <obj_property name="ElementShortName">ireg_src_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ireg_src_data[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/ireg_out" type="array">
+      <obj_property name="ElementShortName">ireg_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ireg_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/sumreg_src_data" type="array">
+      <obj_property name="ElementShortName">sumreg_src_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">sumreg_src_data[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/alu_out" type="array">
+      <obj_property name="ElementShortName">alu_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/u_sumrg/o_data" type="array">
+      <obj_property name="ElementShortName">o_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">o_data[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/u_outreg/in_data" type="array">
+      <obj_property name="ElementShortName">in_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">in_data[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/u_outreg/load" type="logic">
+      <obj_property name="ElementShortName">load</obj_property>
+      <obj_property name="ObjectShortName">load</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_cpu_reg_pr/dut/u_datapath/u_outreg/o_data" type="array">
+      <obj_property name="ElementShortName">o_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">o_data[7:0]</obj_property>
+   </wvobject>
+</wave_config>
