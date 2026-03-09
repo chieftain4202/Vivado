@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_universal_cpu_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_universal_cpu" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="591001fs"></ZoomEndTime>
+      <Cursor1Time time="445000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="138"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="12" />
+   <wvobject fp_name="/tb_universal_cpu/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_universal_cpu/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_universal_cpu/value" type="array">
+      <obj_property name="ElementShortName">value[7:0]</obj_property>
+      <obj_property name="ObjectShortName">value[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_universal_cpu/dut/u_control/c_st" type="array">
+      <obj_property name="ElementShortName">c_st[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c_st[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_universal_cpu/dut/u_datapath/u_reg/ra0" type="array">
+      <obj_property name="ElementShortName">ra0[1:0]</obj_property>
+      <obj_property name="ObjectShortName">ra0[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_universal_cpu/dut/u_datapath/u_reg/ra1" type="array">
+      <obj_property name="ElementShortName">ra1[1:0]</obj_property>
+      <obj_property name="ObjectShortName">ra1[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_universal_cpu/dut/u_datapath/u_reg/wa" type="array">
+      <obj_property name="ElementShortName">wa[1:0]</obj_property>
+      <obj_property name="ObjectShortName">wa[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_universal_cpu/dut/u_datapath/u_reg/wd" type="array">
+      <obj_property name="ElementShortName">wd[7:0]</obj_property>
+      <obj_property name="ObjectShortName">wd[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_universal_cpu/dut/u_datapath/u_reg/we" type="logic">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_universal_cpu/dut/u_datapath/u_reg/rd0" type="array">
+      <obj_property name="ElementShortName">rd0[7:0]</obj_property>
+      <obj_property name="ObjectShortName">rd0[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_universal_cpu/dut/u_datapath/u_reg/rd1" type="array">
+      <obj_property name="ElementShortName">rd1[7:0]</obj_property>
+      <obj_property name="ObjectShortName">rd1[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_universal_cpu/dut/u_datapath/u_reg/sum_value" type="array">
+      <obj_property name="ElementShortName">sum_value[7:0]</obj_property>
+      <obj_property name="ObjectShortName">sum_value[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+</wave_config>
