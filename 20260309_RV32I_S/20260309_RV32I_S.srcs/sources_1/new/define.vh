@@ -1,10 +1,17 @@
 `define SIMULATION 1
 
+//  https://luplab.gitlab.io/rvcodecjs/
+
 //OP code
 `define R_TYPE 7'b0110011
 `define S_TYPE 7'b0100011
 `define I_TYPE 7'b0010011
 `define IL_TYPE 7'b0000011
+`define B_TYPE 7'b1100011
+`define U_TYPE 7'b0010111
+`define UL_TYPE 7'b0110111
+`define J_TYPE 7'b1101111
+`define JL_TYPE 7'b1100111
 
 // R_type instrucktion
 `define ADD 4'b0000        
@@ -17,3 +24,11 @@
 `define SRA 4'b1101     
 `define OR 4'b0110    
 `define AND 4'b0111       
+
+// B type instrucktion
+`define BEQ 4'b0000
+`define BNE 4'b0001
+`define BLT 4'b0100
+`define BGE 4'b0101
+`define BLTU 4'b0110
+`define BGEU 4'b0111

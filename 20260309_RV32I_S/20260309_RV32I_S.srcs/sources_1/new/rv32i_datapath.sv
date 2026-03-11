@@ -9,6 +9,9 @@ module rv32I_datapath (
     input  [ 3:0] alu_control,
     input  [31:0] instr_data,
     input  [31:0] drdata,
+    input         branch,
+    input         jal,
+    input         jalr,
     input         rfwd_src,
     output [31:0] instr_addr,
     output [31:0] daddr,
@@ -18,11 +21,17 @@ module rv32I_datapath (
 
     logic [31:0] rd1, rd2, alu_result, imm_data, alurs2_data;
     logic [31:0] rfwb_data;
+    logic btaken;
 
     program_counter u_pc (
-        .clk(clk),
-        .rst(rst),
-        .instr_addr(),
+        .clk            (clk),
+        .rst            (rst),
+        .instr_addr     (instr_data),
+        .btaken         (btaken),
+        .branch         (branch),
+        .jal            (jal),
+        .jalr           (jalr),
+        .imm_data       (imm_data),
         .program_counter(instr_addr)
     );
 
@@ -54,6 +63,7 @@ module rv32I_datapath (
         .rd1        (rd1),
         .rd2        (alurs2_data),
         .alu_control(alu_control),
+        .btaken     (btaken),
         .alu_result (alu_result)
     );
     //to register file
@@ -78,6 +88,21 @@ module mux2x1 (
 
 endmodule
 
+
+module mux4x1 (
+    input        [31:0] in0,
+    input        [31:0] in1,
+    input        [31:0] in2,
+    input        [31:0] in3,
+    input        [31:0] in4,
+    input        [ 2:0] sel,
+    output logic [31:0] out_mux
+);
+    assign out_mux = (sel == 1) ? in1 : in0;
+
+endmodule
+
+
 module imm_extender (
     input [31:0] instr_data,
     output logic [31:0] imm_data
@@ -93,6 +118,16 @@ module imm_extender (
             end
             `I_TYPE, `IL_TYPE: begin  // load
                 imm_data = {{20{instr_data[31]}}, instr_data[31:20]};
+            end
+            `B_TYPE: begin
+                imm_data = {
+                    {20{instr_data[31]}},
+                    instr_data[31],
+                    instr_data[7],  // imm bit 11
+                    instr_data[30:25],  // imm bit 10:5
+                    instr_data[11:8],  // imm bit 4:1
+                    1'b0
+                };
             end
         endcase
     end
@@ -134,7 +169,8 @@ endmodule
 module alu (
     input        [31:0] rd1,          // rs1
     input        [31:0] rd2,          // rs2
-    input        [ 3:0] alu_control,  // funct7[6], funct3 : 4bit 
+    input        [ 3:0] alu_control,  // funct7[5], funct3 : 4bit 
+    output logic        btaken,
     output logic [31:0] alu_result
 );
 
@@ -159,27 +195,97 @@ module alu (
         endcase
     end
 
+    // B-Type comparator
+    always_comb begin
+        btaken = 0;
+        case (alu_control)
+            `BEQ: begin
+                if (rd1 == rd2) btaken = 1;  // true : pc = PC + IMM
+                else btaken = 0;  //false : pc = PC + 4
+            end
+            `BNE: begin
+                if (rd1 != rd2) btaken = 1;
+                else btaken = 0;
+            end
+            `BLT: begin
+                if ($signed(rd1) < $signed(rd2)) btaken = 1;
+                else btaken = 0;
+            end
+            `BGE: begin
+                if ($signed(rd1) >= $signed(rd2)) btaken = 1;
+                else btaken = 0;
+            end
+            `BLTU: begin  //zero extends
+                if (rd1 < rd2) btaken = 1;
+                else btaken = 0;
+            end
+            `BGEU: begin  //zero extends
+                if (rd1 >= rd2) btaken = 1;
+                else btaken = 0;
+            end
+        endcase
+    end
 endmodule
 
 module program_counter (
     input         clk,
     input         rst,
+    input         btaken,
+    input         branch,
+    input         jal,
+    input         jalr,
+    input         rs1,
     input  [31:0] instr_addr,
+    input  [31:0] imm_data,
     output [31:0] program_counter
 );
 
-    logic [31:0] pc_alu_out;
+    logic [31:0] pc_alu_out, imm_alu_out, mux_out_pc, mux_out_imm;
+    logic and_out, or_out;
+
 
     pc_alu u_pc_alu (
-        .a(32'd4),
-        .b(program_counter),
+        .a         (32'd4),
+        .b         (program_counter),
         .pc_alu_out(pc_alu_out)
     );
 
+    pc_alu u_alu_imm (
+        .a         (imm_data),
+        .b         (mux_out_imm),
+        .pc_alu_out(imm_alu_out)
+    );
+
+    mux_2x1 u_imm_pc_mux (
+        .a  (imm_alu_out),
+        .b  (pc_alu_out),
+        .sel(or_out),
+        .out(mux_out_pc)
+    );
+
+    mux_2x1 u_imm_mux (
+        .a  (imm_data),
+        .b  (program_counter),
+        .sel(jalr),
+        .out(mux_out_imm)
+    );
+
+    and_gate u_and (
+        .a(btaken),
+        .b(branch),
+        .c(and_out)
+    );
+
+    or_gate u_or (
+        .a(and_out),
+        .b(jal),
+        .c(or_out)
+    );
+
     register u_pc_reg (
-        .clk(clk),
-        .rst(rst),
-        .data_in(pc_alu_out),
+        .clk     (clk),
+        .rst     (rst),
+        .data_in (mux_out_pc),
         .data_out(program_counter)
     );
 
@@ -193,6 +299,31 @@ module pc_alu (
     assign pc_alu_out = a + b;
 endmodule
 
+module mux_2x1 (
+    input        [31:0] a,
+    input        [31:0] b,
+    input               sel,
+    output logic [31:0] out
+);
+
+    assign out = (sel) ? a : b;
+endmodule
+
+module and_gate (
+    input  a,
+    input  b,
+    output c
+);
+    assign c = a & b;
+endmodule
+
+module or_gate (
+    input  a,
+    input  b,
+    output c
+);
+    assign c = a | b;
+endmodule
 
 module register (
     input         clk,
