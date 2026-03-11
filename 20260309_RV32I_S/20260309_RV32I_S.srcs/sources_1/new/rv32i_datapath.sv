@@ -8,11 +8,16 @@ module rv32I_datapath (
     input         alu_src,
     input  [ 3:0] alu_control,
     input  [31:0] instr_data,
-    output [31:0] instr_addr
+    input  [31:0] drdata,
+    input         rfwd_src,
+    output [31:0] instr_addr,
+    output [31:0] daddr,
+    output [31:0] dwdata
 
 );
 
     logic [31:0] rd1, rd2, alu_result, imm_data, alurs2_data;
+    logic [31:0] rfwb_data;
 
     program_counter u_pc (
         .clk(clk),
@@ -27,7 +32,7 @@ module rv32I_datapath (
         .ra1  (instr_data[19:15]),
         .ra2  (instr_data[24:20]),
         .wa   (instr_data[11:7]),
-        .Wdata(alu_result),
+        .Wdata(rfwb_data),
         .rf_we(rf_we),
         .rd1  (rd1),
         .rd2  (rd2)
@@ -51,6 +56,16 @@ module rv32I_datapath (
         .alu_control(alu_control),
         .alu_result (alu_result)
     );
+    //to register file
+    mux2x1 u_wb_mux (
+        .in0    (alu_result),  //sel 0
+        .in1    (drdata),      //sel 1
+        .sel    (rfwd_src),
+        .out_mux(rfwb_data)
+    );
+
+    assign daddr  = alu_result;
+    assign dwdata = rd2;
 endmodule
 
 module mux2x1 (
@@ -75,6 +90,9 @@ module imm_extender (
                 imm_data = {
                     {20{instr_data[31]}}, instr_data[31:25], instr_data[11:7]
                 };
+            end
+            `I_TYPE, `IL_TYPE: begin  // load
+                imm_data = {{20{instr_data[31]}}, instr_data[31:20]};
             end
         endcase
     end
@@ -174,6 +192,7 @@ module pc_alu (
 );
     assign pc_alu_out = a + b;
 endmodule
+
 
 module register (
     input         clk,
