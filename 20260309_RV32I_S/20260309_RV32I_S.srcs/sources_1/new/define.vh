@@ -1,6 +1,7 @@
 `define SIMULATION 1
 
 //  https://luplab.gitlab.io/rvcodecjs/
+//  https://godbolt.org/
 
 //OP code
 `define R_TYPE 7'b0110011
@@ -32,3 +33,8 @@
 `define BGE 4'b0101
 `define BLTU 4'b0110
 `define BGEU 4'b0111
+
+// S type instrucktion
+`define SB 3'b000
+`define SH 3'b001
+`define SW 3'b010

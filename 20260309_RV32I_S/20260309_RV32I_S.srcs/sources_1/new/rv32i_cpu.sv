@@ -13,7 +13,8 @@ module rv32i_cpu (
     output        dwe
 );
 
-    logic rf_we, alu_src, rfwd_src, branch, jal, jalr;
+    logic rf_we, alu_src, branch, jal, jalr;
+    logic [ 2:0] rfwd_src;
     logic [ 3:0] alu_control;
     logic [31:0] alu_result;
 
@@ -64,7 +65,7 @@ module control_unit (
     output logic       jalr,
     output logic [2:0] o_funct3,
     output logic       dwe,
-    output logic       rfwd_src,
+    output logic [2:0] rfwd_src,
     output logic       branch,
     output logic [3:0] alu_control
 );
@@ -73,7 +74,7 @@ module control_unit (
         alu_control = 4'b0000;
         rf_we       = 1'b0;
         alu_src     = 1'b0;
-        rfwd_src    = 1'b0;
+        rfwd_src    = 3'b000;
         o_funct3    = 3'b000;
         dwe         = 1'b0;
         branch      = 0;
@@ -82,32 +83,38 @@ module control_unit (
         case (opcode)
             // R-type, to write register file, alu_contrl == {funct7[5], funct3}
             `R_TYPE: begin
-                rf_we       = 1'b1;
-                alu_src     = 1'b0;
-                alu_control = {funct7[5], funct3};
-                rfwd_src    = 1'b0;
-                o_funct3    = 3'b000;
-                dwe         = 1'b0;
-                branch      = 0;
+                rf_we       = 1'b1;  // write register
+                alu_src     = 1'b0;  // 0 = rs2, 1 = imm 
+                alu_control = {funct7[5], funct3};  // funct7, funct3 [3:0]
+                rfwd_src    = 3'b000;  // o_alu value sel mux
+                o_funct3    = 3'b000;  // data_mem control (M)
+                dwe         = 1'b0;  // data mem control write
+                branch      = 0;  // for control B Type
+                jal         = 0;  // for jal
+                jalr        = 0;  // for jalr
             end
             `S_TYPE: begin
                 rf_we       = 1'b0;
                 alu_src     = 1'b1;
                 alu_control = 4'b0000;
-                rfwd_src    = 1'b0;
+                rfwd_src    = 3'b001;
                 o_funct3    = funct3;
                 dwe         = 1'b1;
                 branch      = 0;
+                jal         = 0;
+                jalr        = 0;
 
             end
             `IL_TYPE: begin
                 rf_we       = 1'b1;
                 alu_src     = 1'b1;
                 alu_control = 4'b0000;
-                rfwd_src    = 1'b1;
+                rfwd_src    = 3'b001;
                 o_funct3    = funct3;
                 dwe         = 1'b0;
                 branch      = 0;
+                jal         = 0;
+                jalr        = 0;
             end
             `I_TYPE: begin
                 rf_we   = 1'b1;
@@ -119,34 +126,70 @@ module control_unit (
                     alu_control = {1'b0, funct3};
                 end
 
-                rfwd_src = 1'b0;
+                rfwd_src = 3'b000;
                 o_funct3 = funct3;
                 dwe      = 1'b0;
                 branch   = 0;
+                jal      = 0;
+                jalr     = 0;
             end
             `B_TYPE: begin
                 rf_we       = 1'b0;
                 alu_src     = 1'b0;
                 alu_control = {1'b0, funct3};
-                rfwd_src    = 1'b0;
+                rfwd_src    = 3'b000;
                 o_funct3    = funct3;
                 dwe         = 1'b0;
                 branch      = 1'b1;
+                jal         = 0;
+                jalr        = 0;
             end
+
+
             `U_TYPE: begin
-                ;
+                rf_we       = 1'b1;
+                alu_src     = 1'b1;
+                alu_control = 4'b0000;
+                rfwd_src    = 3'b011;
+                o_funct3    = 3'b000;
+                dwe         = 1'b0;
+                branch      = 1'b0;
+                jal         = 0;
+                jalr        = 0;
             end
             `UL_TYPE: begin
-                ;
+                rf_we       = 1'b1;
+                alu_src     = 1'b1;
+                alu_control = 4'b0000;
+                rfwd_src    = 3'b010;
+                o_funct3    = 3'b000;
+                dwe         = 1'b0;
+                branch      = 1'b0;
+                jal         = 0;
+                jalr        = 0;
             end
             `J_TYPE: begin
-                ;
+                rf_we       = 1'b1;
+                alu_src     = 1'b1;
+                alu_control = 4'b0000;
+                rfwd_src    = 3'b100;
+                o_funct3    = 3'b000;
+                dwe         = 1'b0;
+                branch      = 1'b0;
+                jal         = 1;
+                jalr        = 0;
             end
             `JL_TYPE: begin
-                ;
+                rf_we       = 1'b1;
+                alu_src     = 1'b0;
+                alu_control = 4'b0000;
+                rfwd_src    = 3'b100;
+                o_funct3    = funct3;
+                dwe         = 1'b0;
+                branch      = 1'b0;
+                jal         = 0;
+                jalr        = 1;
             end
         endcase
     end
 endmodule
-
-

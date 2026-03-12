@@ -12,7 +12,7 @@ module rv32I_datapath (
     input         branch,
     input         jal,
     input         jalr,
-    input         rfwd_src,
+    input  [ 2:0] rfwd_src,
     output [31:0] instr_addr,
     output [31:0] daddr,
     output [31:0] dwdata
@@ -20,7 +20,7 @@ module rv32I_datapath (
 );
 
     logic [31:0] rd1, rd2, alu_result, imm_data, alurs2_data;
-    logic [31:0] rfwb_data;
+    logic [31:0] rfwb_data, o_pc_alu, o_imm_alu;
     logic btaken;
 
     program_counter u_pc (
@@ -30,9 +30,12 @@ module rv32I_datapath (
         .btaken         (btaken),
         .branch         (branch),
         .jal            (jal),
+        .rs1            (rd1),
         .jalr           (jalr),
         .imm_data       (imm_data),
-        .program_counter(instr_addr)
+        .program_counter(instr_addr),
+        .o_pc_alu       (o_pc_alu),
+        .o_imm_alu      (o_imm_alu)
     );
 
     register_file U_REG_FILE (
@@ -67,9 +70,12 @@ module rv32I_datapath (
         .alu_result (alu_result)
     );
     //to register file
-    mux2x1 u_wb_mux (
-        .in0    (alu_result),  //sel 0
-        .in1    (drdata),      //sel 1
+    mux5x1 u_wb_mux (
+        .in0    (alu_result),  // alu result
+        .in1    (drdata),      // from data memory
+        .in2    (imm_data),    // from imm extend, for LUI
+        .in3    (o_imm_alu),   // from pc + imm , for AUIPC
+        .in4    (o_pc_alu),    // from PC + 4, for JAL
         .sel    (rfwd_src),
         .out_mux(rfwb_data)
     );
@@ -89,7 +95,7 @@ module mux2x1 (
 endmodule
 
 
-module mux4x1 (
+module mux5x1 (
     input        [31:0] in0,
     input        [31:0] in1,
     input        [31:0] in2,
@@ -98,7 +104,13 @@ module mux4x1 (
     input        [ 2:0] sel,
     output logic [31:0] out_mux
 );
-    assign out_mux = (sel == 1) ? in1 : in0;
+    assign out_mux = (sel == 3'd0) ? in0 :
+                 (sel == 3'd1) ? in1 :
+                 (sel == 3'd2) ? in2 :
+                 (sel == 3'd3) ? in3 :
+                 (sel == 3'd4) ? in4 :
+                 32'hxxxx;
+
 
 endmodule
 
@@ -116,16 +128,30 @@ module imm_extender (
                     {20{instr_data[31]}}, instr_data[31:25], instr_data[11:7]
                 };
             end
-            `I_TYPE, `IL_TYPE: begin  // load
+            `I_TYPE, `IL_TYPE, `JL_TYPE: begin  // load
                 imm_data = {{20{instr_data[31]}}, instr_data[31:20]};
             end
             `B_TYPE: begin
                 imm_data = {
-                    {20{instr_data[31]}},
+                    {19{instr_data[31]}},
                     instr_data[31],
                     instr_data[7],  // imm bit 11
                     instr_data[30:25],  // imm bit 10:5
                     instr_data[11:8],  // imm bit 4:1
+                    1'b0
+                };
+            end
+            `U_TYPE, `UL_TYPE: begin
+                imm_data = {instr_data[31:12], 12'b0};
+
+            end
+            `J_TYPE: begin
+                imm_data = {
+                    {11{instr_data[31]}},
+                    instr_data[31],
+                    instr_data[19:12],
+                    instr_data[20],
+                    instr_data[30:21],
                     1'b0
                 };
             end
@@ -173,7 +199,7 @@ module alu (
     output logic        btaken,
     output logic [31:0] alu_result
 );
-
+    // R-Type comparator
     always_comb begin
         alu_result = 32'h0;
         case (alu_control)
@@ -194,6 +220,7 @@ module alu (
             `AND: alu_result = rd1 & rd2;  // and rd = rs1 & rs2
         endcase
     end
+
 
     // B-Type comparator
     always_comb begin
@@ -234,15 +261,19 @@ module program_counter (
     input         branch,
     input         jal,
     input         jalr,
-    input         rs1,
+    input  [31:0] rs1,
     input  [31:0] instr_addr,
     input  [31:0] imm_data,
-    output [31:0] program_counter
+    output [31:0] program_counter,
+    output [31:0] o_pc_alu,
+    output [31:0] o_imm_alu
 );
 
-    logic [31:0] pc_alu_out, imm_alu_out, mux_out_pc, mux_out_imm;
+    logic [31:0] pc_alu_out, imm_alu_out, mux_out_pc, mux_out_jalr;
     logic and_out, or_out;
 
+    assign o_pc_alu  = pc_alu_out;
+    assign o_imm_alu = imm_alu_out;
 
     pc_alu u_pc_alu (
         .a         (32'd4),
@@ -252,10 +283,11 @@ module program_counter (
 
     pc_alu u_alu_imm (
         .a         (imm_data),
-        .b         (mux_out_imm),
+        .b         (mux_out_jalr),
         .pc_alu_out(imm_alu_out)
     );
-
+    
+    // check
     mux_2x1 u_imm_pc_mux (
         .a  (imm_alu_out),
         .b  (pc_alu_out),
@@ -263,11 +295,11 @@ module program_counter (
         .out(mux_out_pc)
     );
 
-    mux_2x1 u_imm_mux (
-        .a  (imm_data),
+    mux_2x1 u_jalr_mux (
+        .a  (rs1),
         .b  (program_counter),
         .sel(jalr),
-        .out(mux_out_imm)
+        .out(mux_out_jalr)
     );
 
     and_gate u_and (

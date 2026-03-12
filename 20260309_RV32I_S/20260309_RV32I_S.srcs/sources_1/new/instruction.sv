@@ -5,38 +5,23 @@ module instruction_mem (
     output [31:0] instr_data
 );
 
-    logic [31:0] rom[0:31];
+    logic [31:0] rom[0:1023];
 
     initial begin
-        rom[0] = 32'h004182b3;  // ADD X5, X3, X4
-        rom[1] = 32'h00812123;  // SW x2, 2(x8),  sw x2,x8,2
-        rom[2] = 32'h00212383;  // LW x7, X2, 2
-        rom[3] = 32'h00838463;  // BEQ X7, X8, 8 
-        rom[4] = 32'h004182b3;  // ADD X5, X3, X4
-        rom[5] = 32'h00812123;  // SW x2, 2(x8),  sw x2,x8,2
-        
-        
+        $readmemh("Rivc_V_rv32_rom.mem",rom);
+    //    rom[0] = 32'h004182b3;  // ADD X5, X3, X4
+    //    rom[1] = 32'h00812123;  // SW x2, 2(x8),  sw x2,x8,2
+    //    rom[2] = 32'h00212383;  // LW x7, X2, 2
+    //    rom[3] = 32'h00840463;  // BEQ x8, x8, 8
+    //    rom[4] = 32'h004182b3;  // ADD X5, X3, X4
+    //    rom[5] = 32'h00812123;  // SW x2, 2(x8),  sw x2,x8,2
+    //    rom[6] = 32'h00812123;  // SW x2, 2(x8)
+    //    rom[7] = 32'h00812123;  // SW x2, 2(x8)
     end
-    // rom[3] = 32'h00838463;  // BEQ X7, X8, 8 
-    // rom[3] = 32'h00818463;  // BEQ x3, x8, 8
-
-    // rom[0] = 32'h004182b3;  // ADD X5, X3, X4
-    // rom[1] = 32'h40418333;  // SUB  x6,  x3, x4
-    // rom[2] = 32'h004193B3;  // SLL  x7,  x3, x4
-    // rom[0] = 32'h0041B2B3;  // SLTU x5, x3, x4
-    // rom[1] = 32'h00323333;  // SLTU x6, x4, x3
-    // rom[2] = 32'h40735433;  // SRA  x8, x6, x7
-    // rom[3] = 32'h404354B3;  // SRA  x9, x6, x4
-    // rom[1] = 32'h00812123;  // SW x2, 2(x8),  sw x2,x8,2
-    // rom[2] = 32'h009100a3;  // SB x2, 0(x8)
-    // rom[3] = 32'h007100A3;
-
-    // rom[2] = 32'h00212383;  // LW x7, X2, 2
-    // rom[3] = 32'h00438413;  // ADDi X8, X7, 4
-    // rom[1] = 32'h005201b3;
 
     assign instr_data = rom[instr_addr[31:2]];
-
+    // rom[11] = {7'b0, 5'd2, 5'd1, 3'b000, 5'd3, 7'b0110011};
+    // rom[3] = 32'h00838463;  // BEQ X7, X8, 8
 endmodule
 
 
@@ -50,43 +35,68 @@ module data_mem (
     output [31:0] drdata
 );
 
-    //byte address
+    logic [31:0] dmem[0:31];
+    logic [31:0] load_data, word_data;
+    logic [1:0] byte_off;
 
-    //    logic [7:0] dmem[0:31];
-    //
-    //    always_ff @(posedge clk) begin
-    //
-    //        if (dwe) begin
-    //            //store word 일 때만, 이렇게? 
-    //            dmem[daddr+0] <= dwdata[7:0];
-    //            dmem[daddr+1] <= dwdata[15:8];
-    //            dmem[daddr+2] <= dwdata[23:16];
-    //            dmem[daddr+3] <= dwdata[31:24];
-    //        end
-    //    end
-    //
-    //    assign drdata = {
-    //        dmem[daddr], dmem[daddr+1], dmem[daddr+2], dmem[daddr+3]
-    //    };
+    assign byte_off  = daddr[1:0];
+    assign word_data = dmem[daddr[31:2]];
 
-    //word address
-
-    logic [31:0] dmem[0:31];  //word로 word address
+    // Store path
     always_ff @(posedge clk) begin
         if (dwe) begin
-            if (i_funct3 == 3'b000) dmem[daddr[31:2]][7:2] <= dwdata;   // SB
-            if (i_funct3 == 3'b001) dmem[daddr[31:2]][15:2] <= dwdata;  // SH
-            if (i_funct3 == 3'b010) dmem[daddr[31:2]] <= dwdata;        // SW
-        end else begin
-            if (i_funct3 == 3'b000) dmem[daddr[31:2]][7:2] <= dwdata;   // LB
-            if (i_funct3 == 3'b001) dmem[daddr[31:2]][15:2] <= dwdata;  // LH
-            if (i_funct3 == 3'b010) dmem[daddr[31:2]] <= dwdata;        // LW
-            if (i_funct3 == 3'b000) dmem[daddr[31:2]] <= {24'b0, dwdata[7:0]};  // LBU
-            if (i_funct3 == 3'b001) dmem[daddr[31:2]] <= {16'b0, dwdata[15:0]};  // LHU
-
+            case (i_funct3)
+                3'b000: begin  // SB
+                    case (byte_off)
+                        2'b00: dmem[daddr[31:2]][7:0]   <= dwdata[7:0];
+                        2'b01: dmem[daddr[31:2]][15:8]  <= dwdata[7:0];
+                        2'b10: dmem[daddr[31:2]][23:16] <= dwdata[7:0];
+                        2'b11: dmem[daddr[31:2]][31:24] <= dwdata[7:0];
+                    endcase
+                end
+                3'b001: begin  // SH
+                    if (byte_off[1] == 1'b0) dmem[daddr[31:2]][15:0] <= dwdata[15:0];
+                    else dmem[daddr[31:2]][31:16] <= dwdata[15:0];
+                end
+                3'b010: dmem[daddr[31:2]] <= dwdata;  // SW
+                default: ;
+            endcase
         end
     end
 
-    assign drdata = dmem[daddr[31:2]]; //data가 byte로 오니까 밑에 2bit 짜르기 
+    // IL_TYPE load path
+    always_comb begin
+        load_data = 32'd0;
+        case (i_funct3)
+            3'b000: begin  // LB
+                case (byte_off)
+                    2'b00: load_data = {{24{word_data[7]}}, word_data[7:0]};
+                    2'b01: load_data = {{24{word_data[15]}}, word_data[15:8]};
+                    2'b10: load_data = {{24{word_data[23]}}, word_data[23:16]};
+                    2'b11: load_data = {{24{word_data[31]}}, word_data[31:24]};
+                endcase
+            end
+            3'b001: begin  // LH
+                if (byte_off[1] == 1'b0) load_data = {{16{word_data[15]}}, word_data[15:0]};
+                else load_data = {{16{word_data[31]}}, word_data[31:16]};
+            end
+            3'b010: load_data = word_data;  // LW
+            3'b100: begin  // LBU
+                case (byte_off)
+                    2'b00: load_data = {24'b0, word_data[7:0]};
+                    2'b01: load_data = {24'b0, word_data[15:8]};
+                    2'b10: load_data = {24'b0, word_data[23:16]};
+                    2'b11: load_data = {24'b0, word_data[31:24]};
+                endcase
+            end
+            3'b101: begin  // LHU
+                if (byte_off[1] == 1'b0) load_data = {16'b0, word_data[15:0]};
+                else load_data = {16'b0, word_data[31:16]};
+            end
+            default: load_data = word_data;
+        endcase
+    end
+
+    assign drdata = load_data;
 
 endmodule
