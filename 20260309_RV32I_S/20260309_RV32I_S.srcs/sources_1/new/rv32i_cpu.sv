@@ -187,7 +187,7 @@ module control_unit (
                 o_funct3    = funct3;
                 dwe         = 1'b0;
                 branch      = 1'b0;
-                jal         = 0;
+                jal         = 1;
                 jalr        = 1;
             end
         endcase
