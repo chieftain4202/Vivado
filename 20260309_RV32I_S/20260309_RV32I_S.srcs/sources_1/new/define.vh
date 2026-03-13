@@ -1,7 +1,8 @@
-`define SIMULATION 1
+//`define SIMULATION 1
 
 //  https://luplab.gitlab.io/rvcodecjs/
 //  https://godbolt.org/
+//  https://riscvasm.lucasteske.dev/#
 
 //OP code
 `define R_TYPE 7'b0110011

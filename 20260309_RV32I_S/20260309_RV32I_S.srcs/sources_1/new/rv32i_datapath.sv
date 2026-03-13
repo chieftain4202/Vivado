@@ -133,7 +133,7 @@ module imm_extender (
             end
             `B_TYPE: begin
                 imm_data = {
-                    {19{instr_data[31]}},
+                    {20{instr_data[31]}},
                     instr_data[31],
                     instr_data[7],  // imm bit 11
                     instr_data[30:25],  // imm bit 10:5
@@ -147,7 +147,7 @@ module imm_extender (
             end
             `J_TYPE: begin
                 imm_data = {
-                    {11{instr_data[31]}},
+                    {12{instr_data[31]}},
                     instr_data[31],
                     instr_data[19:12],
                     instr_data[20],
@@ -170,7 +170,7 @@ module register_file (
     output [31:0] rd1,
     output [31:0] rd2
 );
-    logic [31:0] register_file[0:31];
+    logic [31:0] register_file[1:31];
 
 `ifdef SIMULATION
     initial begin
@@ -181,14 +181,15 @@ module register_file (
 `endif
 
     always_ff @(posedge clk) begin
-        if (!rst & rf_we) begin
+        if (!rst && rf_we && (wa != 5'd0)) begin
             register_file[wa] <= Wdata;
         end
     end
 
     //output CL
-    assign rd1 = register_file[ra1];
-    assign rd2 = register_file[ra2];
+    assign rd1 = (ra1 == 5'd0) ? 32'd0 : register_file[ra1];
+    assign rd2 = (ra2 == 5'd0) ? 32'd0 : register_file[ra2];
+
 
 endmodule
 
@@ -254,6 +255,7 @@ module alu (
     end
 endmodule
 
+
 module program_counter (
     input         clk,
     input         rst,
@@ -286,7 +288,7 @@ module program_counter (
         .b         (mux_out_jalr),
         .pc_alu_out(imm_alu_out)
     );
-    
+
     // check
     mux_2x1 u_imm_pc_mux (
         .a  (imm_alu_out),

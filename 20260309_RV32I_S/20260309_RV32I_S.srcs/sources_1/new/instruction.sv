@@ -5,7 +5,7 @@ module instruction_mem (
     output [31:0] instr_data
 );
 
-    logic [31:0] rom[0:1023];
+    logic [31:0] rom[0:127];
 
     initial begin
         $readmemh("Rivc_V_rv32_rom.mem",rom);
@@ -35,7 +35,7 @@ module data_mem (
     output [31:0] drdata
 );
 
-    logic [31:0] dmem[0:31];
+    logic [31:0] dmem[0:200];
     logic [31:0] load_data, word_data;
     logic [1:0] byte_off;
 
