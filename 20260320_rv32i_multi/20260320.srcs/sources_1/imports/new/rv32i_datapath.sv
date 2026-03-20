@@ -4,6 +4,7 @@
 module rv32I_datapath (
     input         clk,
     input         rst,
+    input         pc_en,
     input         rf_we,
     input         alu_src,
     input  [ 3:0] alu_control,
@@ -22,17 +23,24 @@ module rv32I_datapath (
     logic [31:0] rd1, rd2, alu_result, imm_data, alurs2_data;
     logic [31:0] rfwb_data, o_pc_alu, o_imm_alu;
     logic btaken;
+    logic [31:0] i_dec_rs1, i_dec_rs2, i_dec_imm, i_exe_alu, i_exe_rs2, i_npc, i_iram, i_oram;
+    logic [31:0] o_dec_rs1, o_dec_rs2, o_dec_imm, o_exe_rs2, o_exe_alu, o_npc, o_iram, o_oram;
+
+
+        assign daddr = o_exe_alu;
+        assign dwdata = o_exe_rs2;
 
     program_counter u_pc (
         .clk            (clk),
         .rst            (rst),
+        .pc_en          (pc_en),
         .instr_addr     (instr_data),
         .btaken         (btaken),
         .branch         (branch),
         .jal            (jal),
         .rs1            (rd1),
         .jalr           (jalr),
-        .imm_data       (imm_data),
+        .imm_data       (o_dec_imm),
         .program_counter(instr_addr),
         .o_pc_alu       (o_pc_alu),
         .o_imm_alu      (o_imm_alu)
@@ -46,42 +54,100 @@ module rv32I_datapath (
         .wa   (instr_data[11:7]),
         .Wdata(rfwb_data),
         .rf_we(rf_we),
-        .rd1  (rd1),
-        .rd2  (rd2)
+        .rd1  (i_dec_rs1),
+        .rd2  (i_dec_rs2)
     );
 
     imm_extender u_imm_extend (
         .instr_data(instr_data),
-        .imm_data  (imm_data)
+        .imm_data  (i_dec_imm)
     );
 
-    mux2x1 u_mux (
-        .in0(rd2),
-        .in1(imm_data),
+    mux2x1 u_mux_alu_srcsel (
+        .in0(o_dec_rs2),
+        .in1(o_dec_imm),
         .sel(alu_src),
         .out_mux(alurs2_data)
     );
 
     alu U_ALU (
-        .rd1        (rd1),
+        .rd1        (o_dec_rs1),
         .rd2        (alurs2_data),
         .alu_control(alu_control),
         .btaken     (btaken),
-        .alu_result (alu_result)
+        .alu_result (i_exe_alu)
     );
     //to register file
     mux5x1 u_wb_mux (
-        .in0    (alu_result),  // alu result
-        .in1    (drdata),      // from data memory
-        .in2    (imm_data),    // from imm extend, for LUI
+        .in0    (o_exe_alu),  // alu result
+        .in1    (o_oram),      // from data memory
+        .in2    (o_dec_imm),    // from imm extend, for LUI
         .in3    (o_imm_alu),   // from pc + imm , for AUIPC
         .in4    (o_pc_alu),    // from PC + 4, for JAL
         .sel    (rfwd_src),
         .out_mux(rfwb_data)
     );
 
-    assign daddr  = alu_result;
-    assign dwdata = rd2;
+
+
+
+    //register for multi cycle
+
+    //decode
+    register decode_ors1 (
+        .clk     (clk),
+        .rst     (rst),
+        .data_in (i_dec_rs1),
+        .data_out(o_dec_rs1)
+    );
+
+    register decode_ors2 (
+        .clk     (clk),
+        .rst     (rst),
+        .data_in (i_dec_rs2),
+        .data_out(o_dec_rs2)
+    );
+
+    register decode_oimm (
+        .clk     (clk),
+        .rst     (rst),
+        .data_in (i_dec_imm),
+        .data_out(o_dec_imm)
+    );
+
+
+    //execute
+    register execute_oalu (
+        .clk     (clk),
+        .rst     (rst),
+        .data_in (i_exe_alu),
+        .data_out(o_exe_alu)    //to Daddr 
+    );
+
+    register execute_rs2 (
+        .clk     (clk),
+        .rst     (rst),
+        .data_in (o_dec_rs2),   // from alu result
+        .data_out(o_exe_rs2)    // to Data MEM_Wdata
+    );
+
+    //memory
+    register memory_iram (
+        .clk     (clk),
+        .rst     (rst),
+        .data_in (drdata),
+        .data_out(dwdata)
+    );
+
+/*
+    //write back
+    register write_back_oram (
+        .clk     (clk),
+        .rst     (rst),
+        .data_in (drdata),
+        .data_out(o_oram)
+    );*/
+
 endmodule
 
 module mux2x1 (
@@ -261,6 +327,7 @@ endmodule
 module program_counter (
     input         clk,
     input         rst,
+    input         pc_en,
     input         btaken,
     input         branch,
     input         jal,
@@ -273,7 +340,7 @@ module program_counter (
     output [31:0] o_imm_alu
 );
 
-    logic [31:0] pc_alu_out, imm_alu_out, mux_out_pc, mux_out_jalr;
+    logic [31:0] pc_alu_out, imm_alu_out, mux_out_pc, mux_out_jalr, o_exe_pcnext;
     logic and_out, or_out;
 
     assign o_pc_alu  = pc_alu_out;
@@ -299,6 +366,16 @@ module program_counter (
         .out(mux_out_pc)
     );
 
+
+    //excute
+    register execute_npc (
+        .clk     (clk),
+        .rst     (rst),
+        .data_in (mux_out_pc),
+        .data_out(o_exe_pcnext)
+    );
+
+
     mux_2x1 u_jalr_mux (
         .a  (rs1),
         .b  (program_counter),
@@ -318,12 +395,17 @@ module program_counter (
         .c(or_out)
     );
 
-    register u_pc_reg (
+    register_en u_pc_reg (
         .clk     (clk),
         .rst     (rst),
-        .data_in (mux_out_pc),
+        .en      (pc_en),
+        .data_in (o_exe_pcnext),
         .data_out(program_counter)
     );
+
+
+
+
 
 endmodule
 
@@ -369,6 +451,54 @@ module register (
 );
 
     logic [31:0] register;
+
+    always_ff @(posedge clk, posedge rst) begin
+        if (rst) begin
+            register <= 0;
+        end else begin
+            register <= data_in;
+        end
+    end
+
+    assign data_out = register;
+
+endmodule
+
+
+module register_en (
+    input         clk,
+    input         rst,
+    input         en,
+    input  [31:0] data_in,
+    output [31:0] data_out
+);
+
+    logic [31:0] register;
+
+    always_ff @(posedge clk, posedge rst) begin
+        if (rst) begin
+            register <= 0;
+        end else begin
+            if (en) begin
+                register <= data_in;
+            end
+        end
+    end
+
+    assign data_out = register;
+
+endmodule
+
+
+
+module register_1b (
+    input  clk,
+    input  rst,
+    input  data_in,
+    output data_out
+);
+
+    logic register;
 
     always_ff @(posedge clk, posedge rst) begin
         if (rst) begin
