@@ -24,7 +24,7 @@ module rv32i_cpu (
         .funct7     (instr_data[31:25]),
         .funct3     (instr_data[14:12]),
         .opcode     (instr_data[6:0]),
-        .pc_en      (pc_en),
+        .pc_en      (pc_en),              //for multi cycle Fetch:
         .rf_we      (rf_we),
         .alu_src    (alu_src),
         .dwe        (dwe),
@@ -68,14 +68,14 @@ module control_unit (
     output logic       alu_src,
     output logic       jal,
     output logic       jalr,
-    output logic [2:0] o_funct3,
-    output logic       dwe,
-    output logic [2:0] rfwd_src,
     output logic       branch,
+    output logic       dwe,
+    output logic [2:0] o_funct3,
+    output logic [2:0] rfwd_src,
     output logic [3:0] alu_control
 );
 
-    typedef enum logic {
+    typedef enum {
         FETCH,
         DECODE,
         EXECUTE,
@@ -104,60 +104,67 @@ module control_unit (
         end
     end
 
-    //next CL
     always_comb begin
         n_state = c_state;
-
         case (c_state)
             FETCH: begin
                 n_state = DECODE;
             end
-
             DECODE: begin
                 n_state = EXECUTE;
             end
-
             EXECUTE: begin
-
+                case (opcode)
+                    `UL_TYPE,`U_TYPE,`JL_TYPE,`J_TYPE,`R_TYPE,`B_TYPE,`I_TYPE: begin
+                        n_state = FETCH;
+                    end
+                    `S_TYPE: begin
+                        n_state = MEM;
+                    end
+                    `IL_TYPE: begin
+                        n_state = MEM;
+                    end
+                endcase
             end
-
             MEM: begin
-
+                case (opcode)
+                    `S_TYPE:  n_state = FETCH;
+                    `IL_TYPE: n_state = WB;
+                endcase
             end
-
             WB: begin
                 n_state = FETCH;
             end
         endcase
     end
 
-
     always_comb begin
         pc_en       = 1'b0;
-        dwe         = 1'b0;
         branch      = 1'b0;
         jal         = 1'b0;
         jalr        = 1'b0;
         rf_we       = 1'b0;
         alu_src     = 1'b0;
-        o_funct3    = 3'b000;
+        dwe         = 1'b0;  //for S type, IL type
+        o_funct3    = 3'b000;  //for S type, IL type
         alu_control = 4'b0000;
         rfwd_src    = 3'b000;
-        c_state     = n_state;
+
         case (c_state)
             FETCH: begin
                 pc_en = 1'b1;
             end
             DECODE: begin
-                pc_en = 1'b0;
             end
             EXECUTE: begin
                 case (opcode)
                     `R_TYPE: begin
+                        rf_we       = 1'b1;
                         alu_src     = 1'b0;
                         alu_control = {funct7[5], funct3};
                     end
                     `I_TYPE: begin
+                        rf_we   = 1'b1;
                         alu_src = 1'b1;
                         if (funct3 == 3'b101) alu_control = {funct7[5], funct3};
                         else alu_control = {1'b0, funct3};
@@ -170,62 +177,43 @@ module control_unit (
                     `S_TYPE: begin
                         alu_src     = 1'b1;
                         alu_control = 4'b0000;
-                        o_funct3    = funct3;
-                        dwe         = 1'b1;
                     end
                     `IL_TYPE: begin
                         alu_src     = 1'b1;
                         alu_control = 4'b0000;
-                        o_funct3    = funct3;
-                        dwe         = 1'b0;
                     end
                     `U_TYPE: begin
+                        rf_we    = 1'b1;
+                        rfwd_src = 3'b011;
                     end
                     `UL_TYPE: begin
+                        rf_we    = 1'b1;
+                        rfwd_src = 3'b010;
                     end
                     `J_TYPE: begin
-                        jal  = 1;
-                        jalr = 0;
+                        rf_we    = 1'b1;
+                        jal      = 1;
+                        jalr     = 0;
+                        rfwd_src = 3'b100;
                     end
                     `JL_TYPE: begin
-                        jal  = 1;
-                        jalr = 1;
+                        rf_we    = 1'b1;
+                        jal      = 1;
+                        jalr     = 1;
+                        rfwd_src = 3'b100;
                     end
                 endcase
             end
             MEM: begin
-                `R_TYPE : begin
-                    o_funct3 = 3'b000;  // data_mem control (M)
-                    dwe      = 1'b0;
-                end
-                `I_TYPE : begin
-
-                end
-                `B_TYPE : begin
-
-                end
-                `S_TYPE : begin
-
-                end
-                `IL_TYPE : begin
-
-                end
-                `U_TYPE : begin
-                end
-                `UL_TYPE : begin
-                end
-                `J_TYPE : begin
-
-                end
-                `JL_TYPE : begin
-
-                end
+                // S type, IL type
+                o_funct3 = funct3;
+                if (opcode == `S_TYPE) dwe = 1'b1;
             end
             WB: begin
-                `R_TYPE : begin
-                    rf_we = 1'b1;
-                    rfwd_src    = 3'b000;
-                end
+                rf_we = 1'b1;
+                // IL type
+                if (opcode == `IL_TYPE)
+                rfwd_src = 3'b001;
             end
 
         endcase

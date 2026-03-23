@@ -38,7 +38,7 @@ module rv32I_datapath (
         .btaken         (btaken),
         .branch         (branch),
         .jal            (jal),
-        .rs1            (rd1),
+        .rs1            (o_dec_rs1),
         .jalr           (jalr),
         .imm_data       (o_dec_imm),
         .program_counter(instr_addr),
@@ -79,7 +79,7 @@ module rv32I_datapath (
     );
     //to register file
     mux5x1 u_wb_mux (
-        .in0    (o_exe_alu),  // alu result
+        .in0    (i_exe_alu),  // alu result
         .in1    (o_oram),      // from data memory
         .in2    (o_dec_imm),    // from imm extend, for LUI
         .in3    (o_imm_alu),   // from pc + imm , for AUIPC
@@ -135,18 +135,18 @@ module rv32I_datapath (
     register memory_iram (
         .clk     (clk),
         .rst     (rst),
-        .data_in (drdata),
-        .data_out(dwdata)
+        .data_in (),
+        .data_out()
     );
 
-/*
+
     //write back
     register write_back_oram (
         .clk     (clk),
         .rst     (rst),
         .data_in (drdata),
         .data_out(o_oram)
-    );*/
+    );
 
 endmodule
 
@@ -402,9 +402,6 @@ module program_counter (
         .data_in (o_exe_pcnext),
         .data_out(program_counter)
     );
-
-
-
 
 
 endmodule
