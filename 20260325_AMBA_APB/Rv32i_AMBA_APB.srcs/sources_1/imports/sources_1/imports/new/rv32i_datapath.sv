@@ -4,19 +4,20 @@
 module rv32I_datapath (
     input         clk,
     input         rst,
+    input         dwe,
     input         pc_en,
     input         rf_we,
     input         alu_src,
     input  [ 3:0] alu_control,
     input  [31:0] instr_data,
-    input  [31:0] drdata,
+    input  [31:0] bus_rdata,
     input         branch,
     input         jal,
     input         jalr,
     input  [ 2:0] rfwd_src,
     output [31:0] instr_addr,
-    output [31:0] daddr,
-    output [31:0] dwdata
+    output [31:0] bus_addr,
+    output [31:0] bus_wdata
 
 );
 
@@ -27,8 +28,8 @@ module rv32I_datapath (
     logic [31:0] o_dec_rs1, o_dec_rs2, o_dec_imm, o_exe_rs2, o_exe_alu, o_npc, o_iram, o_oram;
 
 
-        assign daddr = o_exe_alu;
-        assign dwdata = o_exe_rs2;
+        assign bus_addr = o_exe_alu;
+        assign bus_wdata = o_exe_rs2;
 
     program_counter u_pc (
         .clk            (clk),
@@ -136,7 +137,7 @@ module rv32I_datapath (
     register write_back_oram (
         .clk     (clk),
         .rst     (rst),
-        .data_in (drdata),
+        .data_in (bus_rdata),
         .data_out(o_oram)
     );
 
