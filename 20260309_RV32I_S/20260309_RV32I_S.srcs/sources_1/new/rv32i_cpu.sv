@@ -10,6 +10,7 @@ module rv32i_cpu (
     output [31:0] daddr,
     output [31:0] dwdata,
     output [ 2:0] o_funct3,
+    output string o_opcode_type_name,
     output        dwe
 );
 
@@ -30,6 +31,7 @@ module rv32i_cpu (
         .jalr       (jalr),
         .rfwd_src   (rfwd_src),
         .o_funct3   (o_funct3),
+        .o_opcode_type_name(o_opcode_type_name),
         .branch     (branch),
         .alu_control(alu_control)
     );
@@ -64,6 +66,7 @@ module control_unit (
     output logic       jal,
     output logic       jalr,
     output logic [2:0] o_funct3,
+    output string      o_opcode_type_name,
     output logic       dwe,
     output logic [2:0] rfwd_src,
     output logic       branch,
@@ -76,6 +79,7 @@ module control_unit (
         alu_src     = 1'b0;
         rfwd_src    = 3'b000;
         o_funct3    = 3'b000;
+        o_opcode_type_name = "UNKNOWN";
         dwe         = 1'b0;
         branch      = 0;
         jal         = 0;
@@ -83,6 +87,7 @@ module control_unit (
         case (opcode)
             // R-type, to write register file, alu_contrl == {funct7[5], funct3}
             `R_TYPE: begin
+                o_opcode_type_name = "R_TYPE";
                 rf_we       = 1'b1;  // write register
                 alu_src     = 1'b0;  // 0 = rs2, 1 = imm 
                 alu_control = {funct7[5], funct3};  // funct7, funct3 [3:0]
@@ -94,6 +99,7 @@ module control_unit (
                 jalr        = 0;  // for jalr
             end
             `S_TYPE: begin
+                o_opcode_type_name = "S_TYPE";
                 rf_we       = 1'b0;
                 alu_src     = 1'b1;
                 alu_control = 4'b0000;
@@ -106,6 +112,7 @@ module control_unit (
 
             end
             `IL_TYPE: begin
+                o_opcode_type_name = "IL_TYPE";
                 rf_we       = 1'b1;
                 alu_src     = 1'b1;
                 alu_control = 4'b0000;
@@ -117,6 +124,7 @@ module control_unit (
                 jalr        = 0;
             end
             `I_TYPE: begin
+                o_opcode_type_name = "I_TYPE";
                 rf_we   = 1'b1;
                 alu_src = 1'b1;
 
@@ -134,6 +142,7 @@ module control_unit (
                 jalr     = 0;
             end
             `B_TYPE: begin
+                o_opcode_type_name = "B_TYPE";
                 rf_we       = 1'b0;
                 alu_src     = 1'b0;
                 alu_control = {1'b0, funct3};
@@ -147,6 +156,7 @@ module control_unit (
 
 
             `U_TYPE: begin
+                o_opcode_type_name = "U_TYPE";
                 rf_we       = 1'b1;
                 alu_src     = 1'b1;
                 alu_control = 4'b0000;
@@ -158,6 +168,7 @@ module control_unit (
                 jalr        = 0;
             end
             `UL_TYPE: begin
+                o_opcode_type_name = "UL_TYPE";
                 rf_we       = 1'b1;
                 alu_src     = 1'b1;
                 alu_control = 4'b0000;
@@ -169,6 +180,7 @@ module control_unit (
                 jalr        = 0;
             end
             `J_TYPE: begin
+                o_opcode_type_name = "J_TYPE";
                 rf_we       = 1'b1;
                 alu_src     = 1'b1;
                 alu_control = 4'b0000;
@@ -180,6 +192,7 @@ module control_unit (
                 jalr        = 0;
             end
             `JL_TYPE: begin
+                o_opcode_type_name = "JL_TYPE";
                 rf_we       = 1'b1;
                 alu_src     = 1'b0;
                 alu_control = 4'b0000;

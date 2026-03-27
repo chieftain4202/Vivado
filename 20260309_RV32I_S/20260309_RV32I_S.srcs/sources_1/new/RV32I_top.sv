@@ -2,7 +2,8 @@
 
 module rv32I_top (
     input clk,
-    input rst
+    input rst,
+    output string o_opcode_type_name
 );
 
     logic        dwe;
@@ -14,4 +15,3 @@ module rv32I_top (
     data_mem U_DATA_MEM (.*,.i_funct3(o_funct3));
 
 endmodule
-

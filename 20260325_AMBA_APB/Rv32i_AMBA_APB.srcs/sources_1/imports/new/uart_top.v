@@ -15,33 +15,9 @@ module uart_top (
     wire w_b_tick, w_c_tick, w_rx_done;
     wire [7:0] w_rx_data;
 
-    baud_tick U_BAUD_TICK (
-        .clk(clk),
-        .rst(rst),
-        .o_b_tick(w_b_tick)
+    
 
-    );
-
-    uart_tx U_UART_TX (
-        .clk(clk),
-        .rst(rst),
-        .tx_start(w_rx_done),
-        .b_tick(w_b_tick),
-        .tx_data(w_rx_data),
-        .uart_tx(uart_tx),
-        .tx_busy(),
-        .tx_done()
-    );
-
-    uart_rx U_UART_RX (
-        .clk(clk),
-        .rst(rst),
-        .rx(uart_rx),
-        .b_tick(w_b_tick),
-        .rx_data(w_rx_data),
-        .rx_done(w_rx_done)
-    );
-
+    
     assign uart_rx_data = w_rx_data;
     assign uart_rx_done = w_rx_done;
     // btn_debounce U_BD_TX_START (
@@ -309,7 +285,7 @@ module baud_tick (
 
 );
 
-    parameter BAUDRATE = 153600;
+    parameter BAUDRATE = 25000000;
     parameter F_COUNT = 100_000_000 / BAUDRATE;
     reg [$clog2(F_COUNT)-1 : 0] count_r;
 

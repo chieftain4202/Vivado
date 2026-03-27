@@ -7,72 +7,17 @@ module Amba_apb ();
 
 endmodule
 
-/*
-module apb_slave (
-    input        Pclk,
-    input        Prst,
-    input        Pwrite,
-    input        Penable,
-    input [ 3:0] Paddr,
-    input [31:0] Pwdata_0,
-    input [31:0] Pwdata_1,
-    input [31:0] Pwdata_2,
-    input [31:0] Pwdata_3,
-    input [31:0] Pwdata_4,
-    input [31:0] Pwdata_5,
-    input [31:0] Psel,
-
-    output logic [31:0] Prdata,
-    output logic        Pready,
-
-    output [ 3:0] daddr,
-    output [31:0] dwdata,
-    output        dwe,
-    output [31:0] drdata
-);
-    assign Pready = (Pwrite && Psel) ? 1 : 0;
-    assign Pready = (Penable && Psel) ? 1 : 0;
-
-    always_comb begin
-        if (Pready) begin
-            casez (Paddr[31:0])
-                32'h1???_????: begin
-                    Prdata = Pwdata_0;
-                end  // RAM
-                32'h2000_0???: begin
-                    Prdata = Pwdata_1;
-                end  // GPOs
-                32'h2000_1???: begin
-                    Prdata = Pwdata_2;
-                end  // GPI
-                32'h2000_2???: begin
-                    Prdata = Pwdata_3;
-                end  // GPIO
-                32'h2000_3???: begin
-                    Prdata = Pwdata_4;
-                end  // FND
-                32'h2000_4???: begin
-                    Prdata = Pwdata_5;
-                end  // UART
-            endcase
-        end
-    end
-
-endmodule
-*/
-
 module apb_master (
     input Pclk,
     input Prst,
 
     input [31:0] addr,
     input [31:0] wdata,
-    input Wreq,  //from cpu, write request, signal cpu : dwe (from dwe)
-    input        Rreq,   //from cpu, read request, signal cpu : dre (from alusrc_sel = 1)
+    input        Wreq,
+    input        Rreq,
 
     output logic        Ready,
     output       [31:0] Rdata,
-    output              slverr,
 
     output logic Penable,
     output logic Pwrite,
@@ -180,8 +125,8 @@ module apb_master (
     always_comb begin
         decode_en   = 1'b0;
         Penable     = 1'b0;
-        Ready       = 1'b0;
-        Pwrite_next = 1'b0;
+        // Ready       = 1'b0;
+        Pwrite_next = Pwrite;
         PADDR_next  = Paddr;
         PWDATA_next = Pwdata;
         n_state     = c_state;
@@ -218,7 +163,7 @@ module apb_master (
             ACCESS: begin
                 decode_en = 1;
                 Penable = 1;
-                Ready = 1;
+                // Ready = 1;
                 if (!Ready) begin
                     n_state = ACCESS;
                 end else if (transfer) begin
@@ -262,10 +207,12 @@ module address_dec (
                 end  // RAM
                 32'h2000_0???: begin
                     PSel_1 = 1;
+                //    PSel_3 = 1;
                     sel = 4'd1;
                 end  // GPO
                 32'h2000_1???: begin
                     PSel_2 = 1;
+                //    PSel_3 = 1;
                     sel = 4'd2;
                 end  // GPI
                 32'h2000_2???: begin
@@ -347,7 +294,7 @@ module apb_mux (
 
 endmodule
 
-
+/*
 module register (
     input         clk,
     input         rst,
@@ -385,3 +332,4 @@ module register_1byte (
 
     assign odata = ldata;
 endmodule
+*/

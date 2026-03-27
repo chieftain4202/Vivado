@@ -4,6 +4,9 @@
 module tb_rv32i ();
     logic Pclk, Prst;
     logic [31:0] addr, wdata, Rdata;
+    logic [7:0] GPI;
+    wire [7:0] GPO;
+    wire [15:0] GPIO;
     logic Wreq, Rreq, Ready;
 
     logic slverr;
@@ -32,11 +35,14 @@ module tb_rv32i ();
     logic Pready3;  //from GPIO
     logic Pready4;  //from FND
     logic Pready5;
-    
-    rv32I_top dut(
-    .clk(Pclk),
-    .rst(Prst)
-);
+
+    rv32I_top dut (
+        .clk (Pclk),
+        .rst (Prst),
+        .GPI (GPI),
+        .GPO (GPO),
+        .GPIO(GPIO)
+    );
 
 
     //    apb_master dut (
@@ -52,9 +58,17 @@ module tb_rv32i ();
         Wreq = 0;
         Pclk = 0;
         Prst = 1;
+        //GPI  = 8'h0000;
+
+
         @(negedge Pclk);
         @(negedge Pclk);
         Prst = 0;
+
+        //GPI  = 8'haa;
+        //GPO  = 16'h0000;
+        //GPIO = 16'h0000;
+
         repeat (400) @(negedge Pclk);
         /*
         @(negedge Pclk);

@@ -169,6 +169,7 @@ module control_unit (
                 pc_en = 1'b1;
             end
             DECODE: begin
+
             end
             EXECUTE: begin
                 case (opcode)
@@ -222,10 +223,10 @@ module control_unit (
                 // S type, IL type
                 o_funct3 = funct3;
                 if (opcode == `S_TYPE) dwe = 1'b1;
+                else dre = 1'b1;
             end
             WB: begin
                 rf_we = 1'b1;
-                dre   = 1'b1;
                 // IL type
                 if (opcode == `IL_TYPE) rfwd_src = 3'b001;
             end
