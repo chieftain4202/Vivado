@@ -6,7 +6,11 @@ module tb_rv32i ();
     logic [31:0] addr, wdata, Rdata;
     logic [7:0] GPI;
     wire [7:0] GPO;
-    wire [15:0] GPIO;
+    wire [3:0] fnd_digit;
+    wire [7:0] fnd_data;
+    logic uart_rx;
+    tri [15:0] GPIO;
+    logic [7:0] sw_value;
     logic Wreq, Rreq, Ready;
 
     logic slverr;
@@ -37,11 +41,15 @@ module tb_rv32i ();
     logic Pready5;
 
     rv32I_top dut (
-        .clk (Pclk),
-        .rst (Prst),
-        .GPI (GPI),
-        .GPO (GPO),
-        .GPIO(GPIO)
+        .clk     (Pclk),
+        .rst     (Prst),
+        .GPI     (GPI),
+        .GPO     (GPO),
+        .fnd_digit(fnd_digit),
+        .fnd_data(fnd_data),
+        .uart_rx (uart_rx),
+        .uart_tx (),
+        .GPIO    (GPIO)
     );
 
 
@@ -53,23 +61,35 @@ module tb_rv32i ();
 
     always #5 Pclk = ~Pclk;
 
+    assign GPIO[7:0]  = sw_value;
+    assign GPIO[15:8] = 8'hzz;
+
     initial begin
         Rreq = 0;
         Wreq = 0;
         Pclk = 0;
         Prst = 1;
+        GPI  = 8'h00;
+        uart_rx = 1'b1;
+        sw_value = 8'h00;
         //GPI  = 8'h0000;
-
+        //GPIO = 16'h0000;
 
         @(negedge Pclk);
         @(negedge Pclk);
         Prst = 0;
 
-        //GPI  = 8'haa;
-        //GPO  = 16'h0000;
-        //GPIO = 16'h0000;
+        repeat (50)  @(negedge Pclk);
+        sw_value = 8'h01;
 
-        repeat (400) @(negedge Pclk);
+        repeat (50)  @(negedge Pclk);
+        sw_value = 8'h02;
+
+        repeat (50)  @(negedge Pclk);
+        sw_value = 8'h05;
+
+
+        repeat (500) @(negedge Pclk);
         /*
         @(negedge Pclk);
         Prst = 1;

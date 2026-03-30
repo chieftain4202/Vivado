@@ -6,7 +6,11 @@ module fnd_controller (
     input    reset,
     input    [13:0] fnd_in_data,
     output   [3:0] fnd_digit,
-    output   [7:0] fnd_data
+    output   [7:0] fnd_data,
+    output   [3:0] digit1,
+    output   [3:0] digit10,
+    output   [3:0] digit100,
+    output   [3:0] digit1000
 );
     wire [3:0] w_digit_1, w_digit_10, w_digit_100, w_digit_1000, w_mux_4X1_out;
     wire [1:0] w_digit_sel;
@@ -150,10 +154,10 @@ endmodule
 
 module digit_splitter (
     input  [13:0] in_data,
-    output [3:0] digit_1,
-    output [3:0] digit_10,
-    output [3:0] digit_100,
-    output [3:0] digit_1000
+    output [ 3:0] digit_1,
+    output [ 3:0] digit_10,
+    output [ 3:0] digit_100,
+    output [ 3:0] digit_1000
 
 );
 

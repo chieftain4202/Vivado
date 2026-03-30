@@ -16,19 +16,21 @@ module GPIO (
 
     localparam [11:0] GPIO_ctl_addr = 12'h000;
     localparam [11:0] GPIO_odata_addr = 12'h004;
+    localparam [11:0] GPIO_idata_addr = 12'h008;
     logic we;
-    logic [15:0] GPIO_odata_reg, GPIO_ctl_reg;
+    logic [15:0] GPIO_odata_reg, GPIO_ctl_reg, GPIO_idata_reg;
 
     assign we = (Penable & Pwrite & Psel);
     assign Pready = (Penable & Psel) ? 1'b1 : 1'b0;
 
-    assign Prdata = (Paddr[11:0] == GPIO_ctl_addr) ? {16'h0000,GPIO_ctl_reg} : 
-                    (Paddr[11:0] == GPIO_odata_addr) ? {16'h0000,GPIO_odata_reg}: 32'hxxxx_xxxx;
+    assign Prdata = (Paddr[11:0] == GPIO_ctl_addr) ? {16'h0000,GPIO_ctl_reg} :
+                    (Paddr[11:0] == GPIO_odata_addr) ? {16'h0000,GPIO_odata_reg} :
+                    (Paddr[11:0] == GPIO_idata_addr) ? {16'h0000,GPIO_idata_reg} :
+                    32'hxxxx_xxxx;
 
     always_ff @(posedge Pclk, posedge Prst) begin
         if (Prst) begin
             GPIO_odata_reg <= 16'd0;
-            // GPIO_idata_reg <= 16'd0;
             GPIO_ctl_reg   <= 16'd0;
         end else begin
             if (Pready) begin
@@ -62,7 +64,7 @@ module gpio (
     generate
         for (i = 0; i < 16; i++) begin
             assign gpio[i]   = ctl[i] ? o_data[i] : 1'dz;
-            assign i_data[i] = ~ctl[i] ? gpio[i] : 1'bz;
+            assign i_data[i] = ~ctl[i] ? gpio[i] : 1'b0;
         end
 
     endgenerate
