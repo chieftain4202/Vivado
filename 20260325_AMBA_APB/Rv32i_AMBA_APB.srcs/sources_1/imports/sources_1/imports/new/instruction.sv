@@ -12,9 +12,9 @@ module instruction_mem (
             //$readmemh("APB_Rom.mem",rom);
             //$readmemh("APB_GPO.mem",rom);
             //$readmemh("APB_BRAM_GPO_GPI.mem",rom);
-            $readmemh("APB_GPIO_LED_BLINK.mem",rom);
+            //$readmemh("APB_GPIO_LED_BLINK.mem",rom);
             //$readmemh("APB_GPIO.mem",rom);
-            //$readmemh("APB_FNDC.mem",rom);
+            $readmemh("APB_FNDC.mem",rom);
     //    rom[0] = 32'h123452B7;  // LUI   x5,  0x12345   -> x5 = 0x12345000
     //    rom[1] = 32'hABCDE337;  // LUI   x6,  0xABCDE   -> x6 = 0xABCDE000
     //    rom[2] = 32'h00010397;  // AUIPC x7,  0x00010   -> x7 = PC + 0x00010000
